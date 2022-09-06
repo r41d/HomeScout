@@ -5,6 +5,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
+import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,6 +19,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import android.example.homescout.databinding.ActivityMainBinding
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,10 +35,31 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+
     private val bluetoothAdapter: BluetoothAdapter by lazy {
         val bluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
+
+
+    private val bleScanner by lazy {
+        bluetoothAdapter.bluetoothLeScanner
+    }
+
+    private val scanSettings = ScanSettings.Builder()
+        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+        .build()
+
+    private var isScanning = false
+        set(value) {
+            field = value
+            if (value) {
+                binding.buttonScan.text = "Stop"
+            } else {
+                binding.buttonScan.text = "scan"
+            }
+        }
+
 
     val isLocationPermissionGranted
         get() = hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -62,7 +87,11 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         binding.buttonScan.setOnClickListener{
-            startBLEScan()
+            if (isScanning) {
+                stopBleScan()
+            } else {
+                startBLEScan()
+            }
         }
 
     }
@@ -111,6 +140,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // CALLBACK BODIES
+
+    private val scanCallback = object : ScanCallback() {
+        @SuppressLint("MissingPermission")
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            with(result.device) {
+                Log.i("ScanCallback", "Found BLE device! Name: ${name ?: "Unnamed"}, address: $address")
+            }
+        }
+
+    }
+
     // PRIVATE FUNCTIONS
 
     private fun Context.hasPermission(permissionType: String): Boolean {
@@ -118,16 +159,20 @@ class MainActivity : AppCompatActivity() {
                 PackageManager.PERMISSION_GRANTED
     }
 
+    @SuppressLint("MissingPermission")
     private fun startBLEScan() {
         if (!isLocationPermissionGranted) {
             requestLocationPermission()
         } else {
-            Snackbar.make(
-                this.findViewById(R.id.nav_host_fragment_activity_main),
-                "Location Permission Granted",
-                Snackbar.LENGTH_SHORT)
-                .show()
+            bleScanner.startScan(null, scanSettings, scanCallback)
+            isScanning = true
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun stopBleScan() {
+        bleScanner.stopScan(scanCallback)
+        isScanning = false
     }
 
     private fun requestLocationPermission() {
