@@ -35,7 +35,9 @@ class ScanResultAdapter(
 
         private val deviceName: TextView = view.findViewById(R.id.device_name)
         private val macAddress: TextView = view.findViewById(R.id.mac_address)
+        private val manufacturerData: TextView = view.findViewById(R.id.manufacturer_specific_data)
         private val signalStrength: TextView = view.findViewById(R.id.signal_strength)
+
 
         @SuppressLint("MissingPermission")
         fun bind(result: ScanResult) {
@@ -43,6 +45,7 @@ class ScanResultAdapter(
             deviceName.text = result.device.name ?: "Unnamed"
             macAddress.text = result.device.address
             signalStrength.text = "${result.rssi} dBm"
+            manufacturerData.text = result.scanRecord?.manufacturerSpecificData.toString()
             view.setOnClickListener { onClickListener.invoke(result) }
         }
     }

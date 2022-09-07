@@ -28,13 +28,22 @@
         tools:text="MAC: XX:XX:XX:XX:XX" />
 
     <TextView
+        android:id="@+id/manufacturer_specific_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mac_address"
+        tools:text="XXXXXXXXXXXXX" />
+
+    <TextView
         android:id="@+id/signal_strength"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/manufacturer_specific_data"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/device_name"
         tools:text="-100 dBm" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
