@@ -19,6 +19,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import android.example.homescout.databinding.ActivityMainBinding
+import android.example.homescout.models.DeviceFactory
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,7 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 
 
 private const val ENABLE_BLUETOOTH_REQUEST_CODE = 1
@@ -156,11 +156,19 @@ class MainActivity : AppCompatActivity() {
     private val scanCallback = object : ScanCallback() {
         @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
+            // this might needs to be changed as the device.address might change due to
+            // MAC randomization
+            // check if the current found result is already in the entire scanResult list
+
+            val manufacturerId = result.scanRecord?.manufacturerSpecificData
+            val device = DeviceFactory.createDevice(manufacturerId)
+            device.printManufacturer()
             val indexQuery = scanResults.indexOfFirst { it.device.address == result.device.address }
+            // element not found returns -1
             if (indexQuery != -1) { // A scan result already exists with the same address
                 scanResults[indexQuery] = result
                 scanResultAdapter.notifyItemChanged(indexQuery)
-            } else {
+            } else { // found new device
                 with(result.device) {
                     Log.i("ScanCallback", "Found BLE device! Name: ${name ?: "Unnamed"}, address: $address")
                 }
