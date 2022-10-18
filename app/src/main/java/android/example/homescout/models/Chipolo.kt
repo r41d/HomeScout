@@ -5,6 +5,6 @@ import android.util.Log
 class Chipolo : Device {
 
     override fun printManufacturer() {
-        Log.i("DeviceType", "Chipolo")
+        Log.i("BluetoothAPILogger", "Chipolo")
     }
 }

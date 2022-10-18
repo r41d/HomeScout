@@ -5,6 +5,6 @@ import android.util.Log
 class Tile : Device {
 
     override fun printManufacturer() {
-        Log.i("DeviceType", "Tile")
+        Log.i("BluetoothAPILogger", "Tile")
     }
 }

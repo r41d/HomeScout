@@ -5,7 +5,7 @@ import android.util.Log
 class Samsung :Device {
 
     override fun printManufacturer() {
-        Log.i("DeviceType", "Samsung")
+        Log.i("BluetoothAPILogger", "Samsung")
     }
 
 }

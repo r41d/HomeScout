@@ -5,6 +5,6 @@ import android.util.Log
 class Unknown : Device {
 
     override fun printManufacturer() {
-        Log.i("DeviceType", "Unknown")
+        Log.i("BluetoothAPILogger", "Unknown")
     }
 }
