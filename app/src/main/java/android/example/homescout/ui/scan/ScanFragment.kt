@@ -39,7 +39,7 @@ private const val LOCATION_PERMISSION_REQUEST_CODE = 2
 class ScanFragment : Fragment() {
 
 
-    // PROPERTIES regular
+    // PROPERTIES
 
     // This property is only valid between onCreateView and
     // onDestroyView.
