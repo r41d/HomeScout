@@ -4,4 +4,11 @@
     <string name="title_settings">Settings</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_scan">Scan</string>
+    <string name="description_title_welcome">Home Scout</string>
+    <string name="description_text_welcome">This app aims to protect you from malicious
+        Bluetooth Low Energy trackers. It detects when such a tracker is following you.
+        Therefore Bluetooth Low Energy needs to be enabled. Also you need to allow the app
+        to use your location. This way the app can determine if a tracker is following you.
+        Please keep Bluetooth enabled and allow the app to use your location, otherwise the
+        app cannot detect malicious trackers.</string>
 </resources>

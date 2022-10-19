@@ -1,4 +1,4 @@
-package android.example.homescout.ui.home
+package android.example.homescout.ui.welcome
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,10 +28,6 @@ class WelcomeFragment : Fragment() {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textWelcome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 
