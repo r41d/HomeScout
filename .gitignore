@@ -84,3 +84,6 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# ignore old unused icons
+app/src/main/res/drawable/old_icons
