@@ -1,4 +1,4 @@
-package android.example.homescout.ui.dashboard
+package android.example.homescout.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
