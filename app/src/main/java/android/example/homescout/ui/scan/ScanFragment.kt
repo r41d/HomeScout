@@ -45,8 +45,7 @@ class ScanFragment : Fragment() {
     // onDestroyView.
     private var _binding: FragmentScanBinding? = null
     private val binding get() = _binding!!
-    val isLocationPermissionGranted
-        get() = activity?.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+
     private val scanResults = mutableListOf<ScanResult>()
     private var isScanning = false
         set(value) {
@@ -97,7 +96,6 @@ class ScanFragment : Fragment() {
         setupRecyclerView()
 
         requestBluetoothIsEnabled()
-        requestLocationPermissionIsEnabled()
 
         return binding.root
     }
@@ -202,28 +200,7 @@ class ScanFragment : Fragment() {
         }
     }
 
-
-    private fun requestLocationPermissionIsEnabled() {
-        if (!isLocationPermissionGranted!!) {
-            MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Location required")
-            .setMessage("For this app to work you need to enable Locations")
-            .setPositiveButton("Ok") { dialog, which ->
-                requestPermission(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    LOCATION_PERMISSION_REQUEST_CODE
-                )
-            }
-            .show()
-        }
-    }
-
     // PRIVATE FUNCTIONS
-
-    private fun Context.hasPermission(permissionType: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permissionType) ==
-                PackageManager.PERMISSION_GRANTED
-    }
 
     @SuppressLint("MissingPermission")
     private fun startBLEScan() {
