@@ -39,33 +39,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_welcome" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_enable_bluetooth"
+    <Button
+        android:id="@+id/button_grant_permission"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"
         android:layout_marginStart="@dimen/margin_small"
         android:layout_marginEnd="@dimen/margin_small"
-        android:text="@string/description_switch_bluetooth"
-        android:fontFamily="@font/roboto"
-        android:textSize="@dimen/text_size_regular"
-        app:layout_constraintTop_toBottomOf="@id/text_welcome"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/grant_permission"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/margin_large" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_enable_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_small"
-        android:fontFamily="@font/roboto"
-        android:text="@string/description_switch_location"
-        android:textSize="@dimen/text_size_regular"
-        app:layout_constraintEnd_toEndOf="@+id/switch_enable_bluetooth"
-        app:layout_constraintStart_toStartOf="@+id/switch_enable_bluetooth"
-        app:layout_constraintTop_toBottomOf="@id/switch_enable_bluetooth"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
