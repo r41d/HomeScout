@@ -25,9 +25,9 @@ class WelcomeFragment : Fragment() {
     val isLocationPermissionGranted
         // version Q = API 29
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            activity?.hasPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            requireActivity().hasPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         } else {
-            activity?.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+            requireActivity().hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
         }
 
 
