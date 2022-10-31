@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.example.homescout.BluetoothAPILogger
 import android.example.homescout.PermissionAppIntro
-import android.example.homescout.ScanResultAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

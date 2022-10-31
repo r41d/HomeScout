@@ -1,8 +1,8 @@
-package android.example.homescout
+package android.example.homescout.ui.scan
 
 import android.annotation.SuppressLint
 import android.bluetooth.le.ScanResult
-import android.util.Log
+import android.example.homescout.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +41,7 @@ class ScanResultAdapter(
 
         @SuppressLint("MissingPermission")
         fun bind(result: ScanResult) {
-            // Log.i("Adapter", "view id: ${view.parent}")
+            // display device name, manufacturer, device type and mac address of ble device
             deviceName.text = result.device.name ?: "Unnamed"
             macAddress.text = result.device.address
             signalStrength.text = "${result.rssi} dBm"
