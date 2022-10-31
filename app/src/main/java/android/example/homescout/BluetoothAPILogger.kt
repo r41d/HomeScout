@@ -2,7 +2,7 @@ package android.example.homescout
 
 import android.annotation.SuppressLint
 import android.bluetooth.le.ScanResult
-import android.example.homescout.models.DeviceFactory
+import android.example.homescout.models.DeviceTypeManager
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -19,7 +19,7 @@ class BluetoothAPILogger() {
         //val services = result.scanRecord?.serviceUuids
         //Log.i("BluetoothAPILogger - Service", "$services")
 
-        val tmp_device = DeviceFactory.createDevice(manufacturerData)
+        val tmp_device = DeviceTypeManager.identifyDeviceType(result)
         tmp_device.printManufacturer()
 
         // identification for AirTag

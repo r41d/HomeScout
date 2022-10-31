@@ -1,6 +1,8 @@
 package android.example.homescout.models
 
-interface Device {
+interface DeviceType {
+
+    val type: String
 
     fun printManufacturer()
 }

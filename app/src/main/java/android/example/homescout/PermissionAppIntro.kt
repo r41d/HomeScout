@@ -51,7 +51,9 @@ class PermissionAppIntro : AppIntro() {
 
         // ASK FOR NECESSARY PERMISSIONS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            askForPermissions(arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
+            askForPermissions(arrayOf(
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT), 1)
         }
         askForPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
 
