@@ -13,14 +13,14 @@ class PermissionAppIntro : AppIntro() {
         super.onCreate(savedInstanceState)
         // Make sure you don't call setContentView!
 
-        // Call addSlide passing your Fragments.
-        // You can use AppIntroFragment to use a pre-built fragment
+        // APP INTRO CONFIGURATIONS
         isIndicatorEnabled = true
         isWizardMode = true
         setImmersiveMode()
         setTheme(R.style.Theme_HomeScout)
 
 
+        // SLIDES OF THE APP INTRO
         addSlide(AppIntroFragment.createInstance(
             title = "Enable Bluetooth",
             description = "Please make sure you have Bluetooth enabled.",
@@ -48,6 +48,10 @@ class PermissionAppIntro : AppIntro() {
             backgroundColorRes = R.color.purple_500
         ))
 
+        // ASK FOR NECESSARY PERMISSIONS
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            askForPermissions(arrayOf(Manifest.permission.BLUETOOTH_SCAN), 1)
+        }
         askForPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
 
 
