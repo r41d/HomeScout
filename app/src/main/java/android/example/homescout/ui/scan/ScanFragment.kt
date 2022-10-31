@@ -7,9 +7,10 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
-import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.example.homescout.BluetoothAPILogger
+import android.example.homescout.PermissionAppIntro
 import android.example.homescout.ScanResultAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,19 +19,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import android.example.homescout.databinding.FragmentScanBinding
-import android.example.homescout.models.DeviceFactory
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlin.experimental.and
 
 
 private const val ENABLE_BLUETOOTH_REQUEST_CODE = 1
@@ -171,11 +168,13 @@ class ScanFragment : Fragment() {
 
     // CALLBACKS
     private val scanCallback = object : ScanCallback() {
-        @RequiresApi(Build.VERSION_CODES.R)
-        @SuppressLint("MissingPermission")
+
+
         override fun onScanResult(callbackType: Int, result: ScanResult) {
 
-            BluetoothAPILogger().logResults(result)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                BluetoothAPILogger().logResults(result)
+            }
 
 
             // this might needs to be changed as the device.address might change due to
@@ -201,20 +200,33 @@ class ScanFragment : Fragment() {
     }
 
     // PRIVATE FUNCTIONS
-
-    @SuppressLint("MissingPermission")
     private fun startBLEScan() {
 
         if (!bluetoothAdapter.isEnabled) { requestBluetoothIsEnabled() }
 
         scanResults.clear()
         scanResultAdapter.notifyDataSetChanged()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.BLUETOOTH_SCAN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            startActivity(Intent(requireContext(), PermissionAppIntro::class.java))
+            return
+        }
         bleScanner.startScan(null, scanSettings, scanCallback)
         isScanning = true
     }
 
-    @SuppressLint("MissingPermission")
     private fun stopBleScan() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.BLUETOOTH_SCAN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            startActivity(Intent(requireContext(), PermissionAppIntro::class.java))
+            return
+        }
         bleScanner.stopScan(scanCallback)
         isScanning = false
     }
