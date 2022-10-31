@@ -4,19 +4,104 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/margin_large"
     tools:context=".ui.settings.SettingsFragment">
 
+
     <TextView
-        android:id="@+id/text_settings"
+        android:id="@+id/text_slider_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="Distance traveled"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider_distance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:value="300.0"
+        android:valueFrom="50.0"
+        android:valueTo="1000.0"
+        android:stepSize="50.0"
+        app:layout_constraintTop_toBottomOf="@id/text_slider_distance" />
+
+
+    <TextView
+        android:id="@+id/text_slider_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="Time traveled"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintTop_toBottomOf="@id/slider_distance"
+        app:layout_constraintStart_toStartOf="@id/slider_distance"
+        />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_medium"
+        android:value="0.0"
+        android:valueFrom="0.0"
+        android:valueTo="60.0"
+        android:stepSize="5.0"
+        app:layout_constraintTop_toBottomOf="@id/text_slider_time" />
+
+    <TextView
+        android:id="@+id/text_slider_occurences"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="Number of occurences"
+        android:fontFamily="@font/roboto"
+        app:layout_constraintTop_toBottomOf="@id/slider_time"
+        app:layout_constraintStart_toStartOf="@id/slider_time"
+        />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider_occurences"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:value="3.0"
+        android:valueFrom="0.0"
+        android:valueTo="10.0"
+        android:stepSize="1.0"
+        app:layout_constraintTop_toBottomOf="@id/text_slider_occurences" />
+
+
+    <Button
+        android:id="@+id/button_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:text="Apply default settings"
+        style="?attr/materialButtonOutlinedStyle"
+        app:layout_constraintBottom_toTopOf="@id/button_air_guard" />
+
+    <Button
+        android:id="@+id/button_air_guard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:text="apply airguard\'s settings"
+        style="?attr/materialButtonOutlinedStyle"
+        app:layout_constraintBottom_toTopOf="@id/button_apple" />
+
+
+
+    <Button
+        android:id="@+id/button_apple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:text="Apply Apple\'s settings"
+        style="?attr/materialButtonOutlinedStyle"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
