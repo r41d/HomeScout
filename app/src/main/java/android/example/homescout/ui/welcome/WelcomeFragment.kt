@@ -2,6 +2,7 @@ package android.example.homescout.ui.welcome
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import android.example.homescout.databinding.FragmentWelcomeBinding
+import android.example.homescout.PermissionAppIntro
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -61,7 +63,8 @@ class WelcomeFragment : Fragment() {
 
     private fun setupOnClickListener() {
         binding.buttonGrantPermission.setOnClickListener {
-            requestLocationPermissionIsEnabled()
+            // requestLocationPermissionIsEnabled()
+            startActivity(Intent(requireContext(), PermissionAppIntro::class.java))
         }
     }
 
