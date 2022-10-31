@@ -1,7 +1,6 @@
 package android.example.homescout.ui.scan
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
@@ -43,6 +42,8 @@ class ScanFragment : Fragment() {
     private var _binding: FragmentScanBinding? = null
     private val binding get() = _binding!!
 
+    private val isBluetoothEnabled : Boolean
+        get() = bluetoothAdapter.isEnabled
     private val scanResults = mutableListOf<ScanResult>()
     private var isScanning = false
         set(value) {
@@ -92,7 +93,7 @@ class ScanFragment : Fragment() {
         setOnClickListenerForScanButton()
         setupRecyclerView()
 
-        requestBluetoothIsEnabled()
+        checkIfBluetoothIsEnabled()
 
         return binding.root
     }
@@ -100,9 +101,7 @@ class ScanFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!bluetoothAdapter.isEnabled) {
-            requestBluetoothIsEnabled()
-        }
+        checkIfBluetoothIsEnabled()
     }
 
     override fun onDestroyView() {
@@ -152,15 +151,17 @@ class ScanFragment : Fragment() {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun requestBluetoothIsEnabled() {
-        if (!bluetoothAdapter.isEnabled) {
+    private fun checkIfBluetoothIsEnabled() {
+
+        binding.buttonScan.isEnabled = isBluetoothEnabled
+
+        if (!isBluetoothEnabled) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Bluetooth required")
-                .setMessage("For this app to work you need to enable bluetooth")
-                .setPositiveButton("Enable") { dialog, which ->
+                .setTitle("Bluetooth required!")
+                .setMessage("Please enable Bluetooth. Thanks")
+                .setPositiveButton("Ok") { dialog, which ->
                     // Respond to positive button press
-                    bluetoothAdapter.enable()
+
                 }
                 .show()
         }
@@ -202,7 +203,7 @@ class ScanFragment : Fragment() {
     // PRIVATE FUNCTIONS
     private fun startBLEScan() {
 
-        if (!bluetoothAdapter.isEnabled) { requestBluetoothIsEnabled() }
+        if (!isBluetoothEnabled) { checkIfBluetoothIsEnabled() }
 
         scanResults.clear()
         scanResultAdapter.notifyDataSetChanged()
