@@ -7,10 +7,13 @@
     <string name="description_title_welcome">Home Scout</string>
     <string name="description_text_welcome">This app protects you from malicious
         Bluetooth Low Energy trackers. It detects when such a tracker is following you.
-        Therefore Bluetooth Low Energy needs to be enabled to scan for trackers.
+        Therefore, Bluetooth Low Energy (BLE) needs to be enabled and the app needs your
+        permission to scan for BLE devices.
+
         Also you need to allow the app to use your location. This way the app can determine
         if a tracker is following you.
+
         Note, no data will be sent to any third party. The data collected from Bluetooth
         and Location remains on your phone.</string>
-    <string name="grant_permission">Grant Permission</string>
+    <string name="grant_permission">Grant Permissions</string>
 </resources>

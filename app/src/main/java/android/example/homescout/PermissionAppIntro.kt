@@ -23,7 +23,8 @@ class PermissionAppIntro : AppIntro() {
         // SLIDES OF THE APP INTRO
         addSlide(AppIntroFragment.createInstance(
             title = "Enable Bluetooth",
-            description = "Please make sure you have Bluetooth enabled.",
+            description = "Please make sure you have Bluetooth enabled. " +
+                    "Also allow the app to scan for BLE devices in the upcoming dialog.",
             titleTypefaceFontRes = R.font.roboto_bold,
             descriptionTypefaceFontRes = R.font.roboto,
             imageDrawable = R.drawable.ic_bluetooth_onboarding,
@@ -32,8 +33,8 @@ class PermissionAppIntro : AppIntro() {
         addSlide(
                 AppIntroFragment.createInstance(
                     title = "Location Permission",
-                    description = "In the upcoming permission dialog please select " +
-                            "\"Allow in settings\" and set it to \"Allow all the time\".",
+                    description = "For the location permission dialog please press " +
+                            "\"Allow in settings\" and there select \"Allow all the time\".",
                     titleTypefaceFontRes = R.font.roboto_bold,
                     descriptionTypefaceFontRes = R.font.roboto,
                     imageDrawable = R.drawable.ic_location_on_onboarding,
