@@ -16,4 +16,13 @@
         Note, no data will be sent to any third party. The data collected from Bluetooth
         and Location remains on your phone.</string>
     <string name="grant_permission">Grant Permissions</string>
+    <string name="description_slider_distance">Distance</string>
+    <string name="description_slider_time">Time</string>
+    <string name="description_slider_occurrences">Occurrences</string>
+    <string name="text_dialog_slider_distance">Determines how many meters a tracker at least needs to follow you before getting notified.</string>
+    <string name="text_dialog_slider_time">Determines how many minutes a tracker at least needs to follow you before getting notified.</string>
+    <string name="text_dialog_slider_occurrences">Determines how many times a tracker at least needs to be close to you before getting notified.</string>
+    <string name="text_default_settings">Apply default settings</string>
+    <string name="text_airguard_settings">apply airguard\'s settings</string>
+    <string name="text_apple_settings">Apply Apple\'s settings</string>
 </resources>
