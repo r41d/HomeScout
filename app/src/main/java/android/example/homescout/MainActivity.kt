@@ -1,6 +1,10 @@
 package android.example.homescout
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.example.homescout.databinding.ActivityMainBinding
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -11,8 +15,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-private const val ENABLE_BLUETOOTH_REQUEST_CODE = 1
-private const val LOCATION_PERMISSION_REQUEST_CODE = 2
+private const val CHANNEL_ID = "1"
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,6 +48,26 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        createNotificationChannel()
+
     }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "test_notifications_channel"
+            val descriptionText = "this test the notifications"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
 
 }

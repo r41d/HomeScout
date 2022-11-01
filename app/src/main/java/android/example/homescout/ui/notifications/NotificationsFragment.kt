@@ -1,5 +1,6 @@
 package android.example.homescout.ui.notifications
 
+import android.example.homescout.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import android.example.homescout.databinding.FragmentNotificationsBinding
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+
+private const val CHANNEL_ID = "1"
 
 class NotificationsFragment : Fragment() {
 
@@ -22,17 +27,32 @@ class NotificationsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
 
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        binding.buttonNotify.setOnClickListener {
+            createAndSendNotification()
         }
-        return root
+
+
+
+
+
+
+        return binding.root
+    }
+
+    private fun createAndSendNotification() {
+        var builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setContentTitle("Hello")
+            .setContentText("This is my first notification")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+
+        with(NotificationManagerCompat.from(requireContext())) {
+            notify(1, builder.build())
+        }
     }
 
     override fun onDestroyView() {
