@@ -25,4 +25,6 @@
     <string name="text_default_settings">Apply default settings</string>
     <string name="text_airguard_settings">apply airguard\'s settings</string>
     <string name="text_apple_settings">Apply Apple\'s settings</string>
+    <string name="title_switch_tracking_protection">Tracking Protection</string>
+    <string name="subtext_switch_tracking_protection">Notifies about Bluetooth Low Energy trackers following you.</string>
 </resources>
