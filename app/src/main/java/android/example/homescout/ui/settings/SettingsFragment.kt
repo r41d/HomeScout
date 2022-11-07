@@ -1,6 +1,6 @@
 package android.example.homescout.ui.settings
 
-import android.R.color
+import android.annotation.SuppressLint
 import android.example.homescout.R
 import android.example.homescout.databinding.FragmentSettingsBinding
 import android.os.Bundle
@@ -8,12 +8,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.Slider
 
 
 class SettingsFragment : Fragment() {
@@ -23,6 +22,17 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private lateinit var settingsViewModel: SettingsViewModel
+
+    private val touchListener: Slider.OnSliderTouchListener =
+        object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                // Not needed
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                Log.d("SettingsFragment", "Value: ${slider.value}")
+            }
+        }
 
 
     // LIFECYCLE FUNCTIONS
@@ -37,6 +47,7 @@ class SettingsFragment : Fragment() {
         setupSliderTime()
         setupSliderOccurences()
         setupColorChangeForInfoButtons()
+        addOnSliderTouchListeners()
 
         return binding.root
     }
@@ -148,5 +159,11 @@ class SettingsFragment : Fragment() {
                 )
             }
         }
+    }
+
+    private fun addOnSliderTouchListeners() {
+        binding.sliderDistance.addOnSliderTouchListener(touchListener)
+        binding.sliderTime.addOnSliderTouchListener(touchListener)
+        binding.sliderOccurrences.addOnSliderTouchListener(touchListener)
     }
 }
