@@ -7,11 +7,7 @@ import android.example.homescout.databinding.ActivityMainBinding
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,6 +16,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -27,14 +24,11 @@ import kotlinx.coroutines.launch
 
 private const val CHANNEL_ID = "1"
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     // PROPERTIES
     private lateinit var binding: ActivityMainBinding
-    private val dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-    val EXAMPLE_COUNTER = intPreferencesKey("example_counter")
-
-
 
     // LIFECYCLE FUNCTIONS
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,28 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         createNotificationChannel()
 
-
-        val exampleCounterFlow = dataStore.data.map { preferences ->
-                val counter = preferences[EXAMPLE_COUNTER] ?: 0
-                counter
-            }
-
-        exampleCounterFlow.asLiveData().observe(this) {
-            Snackbar.make(binding.root, "Counter: ${it}", Snackbar.LENGTH_LONG).show()
-        }
-
-        GlobalScope.launch {
-            incrementCounter()
-        }
-
-    }
-
-    suspend fun incrementCounter() {
-
-        dataStore.edit { settings ->
-            val currentCounterValue = settings[EXAMPLE_COUNTER] ?: 0
-            settings[EXAMPLE_COUNTER] = currentCounterValue + 1
-        }
     }
 
 

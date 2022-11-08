@@ -11,10 +11,14 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
 
@@ -23,14 +27,36 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var settingsViewModel: SettingsViewModel
 
-    private val touchListener: Slider.OnSliderTouchListener =
+    private val touchListenerDistance: Slider.OnSliderTouchListener =
         object : Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
                 // Not needed
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
-                Log.d("SettingsFragment", "Value: ${slider.value}")
+                settingsViewModel.updateDistance(slider.value)
+            }
+        }
+
+    private val touchListenerTime: Slider.OnSliderTouchListener =
+        object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                // Not needed
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                settingsViewModel.updateTime(slider.value)
+            }
+        }
+
+    private val touchListenerOccurrences: Slider.OnSliderTouchListener =
+        object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                // Not needed
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                settingsViewModel.updateOccurrences(slider.value)
             }
         }
 
@@ -43,10 +69,12 @@ class SettingsFragment : Fragment() {
     ): View {
 
         setupViewModelAndBinding(inflater, container)
+        setupSwitchTrackingProtection()
         setupSliderDistance()
         setupSliderTime()
         setupSliderOccurences()
         setupColorChangeForInfoButtons()
+        observeTrackingPreferences()
         addOnSliderTouchListeners()
 
         return binding.root
@@ -68,11 +96,6 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.settingsViewModel = settingsViewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
-
-        binding.switchTrackingProtection.setOnClickListener {
-            settingsViewModel.onSwitchToggled()
-        }
     }
 
     private fun setupSliderDistance() {
@@ -91,6 +114,12 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun setupSwitchTrackingProtection() {
+        binding.switchTrackingProtection.setOnCheckedChangeListener { _, checked ->
+            Log.i("SettingsFragment", "value: ${checked}")
+            settingsViewModel.onSwitchToggled(checked)
+        }
+    }
 
     private fun setupSliderTime() {
         binding.sliderTime.setLabelFormatter { value: Float ->
@@ -161,9 +190,24 @@ class SettingsFragment : Fragment() {
         }
     }
 
+
+    private fun observeTrackingPreferences() {
+        settingsViewModel.distance.observe(viewLifecycleOwner) {
+            binding.sliderDistance.value = it
+        }
+
+        settingsViewModel.time.observe(viewLifecycleOwner) {
+            binding.sliderTime.value = it
+        }
+
+        settingsViewModel.occurrences.observe(viewLifecycleOwner) {
+            binding.sliderOccurrences.value = it
+        }
+    }
+
     private fun addOnSliderTouchListeners() {
-        binding.sliderDistance.addOnSliderTouchListener(touchListener)
-        binding.sliderTime.addOnSliderTouchListener(touchListener)
-        binding.sliderOccurrences.addOnSliderTouchListener(touchListener)
+        binding.sliderDistance.addOnSliderTouchListener(touchListenerDistance)
+        binding.sliderTime.addOnSliderTouchListener(touchListenerTime)
+        binding.sliderOccurrences.addOnSliderTouchListener(touchListenerOccurrences)
     }
 }
