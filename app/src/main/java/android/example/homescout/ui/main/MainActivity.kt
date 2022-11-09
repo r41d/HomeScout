@@ -1,8 +1,9 @@
-package android.example.homescout
+package android.example.homescout.ui.main
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.example.homescout.R
 import android.example.homescout.databinding.ActivityMainBinding
 import android.os.Build
 import android.os.Bundle

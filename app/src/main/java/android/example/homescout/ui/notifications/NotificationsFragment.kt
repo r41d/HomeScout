@@ -1,24 +1,17 @@
 package android.example.homescout.ui.notifications
 
-import android.app.PendingIntent
 import android.content.Intent
-import android.example.homescout.MainActivity
 import android.example.homescout.R
+import android.example.homescout.databinding.FragmentNotificationsBinding
+import android.example.homescout.ui.main.MainActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import android.example.homescout.databinding.FragmentNotificationsBinding
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.navigation.NavController
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavDeepLinkBuilder
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 
 private const val CHANNEL_ID = "1"
 

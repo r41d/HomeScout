@@ -4,8 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.example.homescout.PermissionAppIntro
 import android.example.homescout.databinding.FragmentWelcomeBinding
+import android.example.homescout.ui.intro.PermissionAppIntro
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater

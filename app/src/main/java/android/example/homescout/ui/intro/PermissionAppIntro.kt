@@ -1,6 +1,7 @@
-package android.example.homescout
+package android.example.homescout.ui.intro
 
 import android.Manifest
+import android.example.homescout.R
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment

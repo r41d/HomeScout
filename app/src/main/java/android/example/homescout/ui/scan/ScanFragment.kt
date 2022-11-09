@@ -8,9 +8,9 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.example.homescout.utils.BluetoothAPILogger
-import android.example.homescout.PermissionAppIntro
 import android.example.homescout.databinding.FragmentScanBinding
+import android.example.homescout.ui.intro.PermissionAppIntro
+import android.example.homescout.utils.BluetoothAPILogger
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
