@@ -8,6 +8,7 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.example.homescout.R
 import android.example.homescout.databinding.FragmentScanBinding
 import android.example.homescout.ui.intro.PermissionAppIntro
 import android.example.homescout.utils.BluetoothAPILogger
@@ -28,9 +29,6 @@ import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 
-private const val ENABLE_BLUETOOTH_REQUEST_CODE = 1
-private const val LOCATION_PERMISSION_REQUEST_CODE = 2
-
 class ScanFragment : Fragment() {
 
 
@@ -48,9 +46,9 @@ class ScanFragment : Fragment() {
         set(value) {
             field = value
             if (value) {
-                binding.buttonScan.text = "Stop"
+                binding.buttonScan.text = getString(R.string.scan_button_stop)
             } else {
-                binding.buttonScan.text = "scan"
+                binding.buttonScan.text = getString(R.string.scan_button_scan)
             }
         }
 
@@ -112,7 +110,7 @@ class ScanFragment : Fragment() {
 
     // FUNCTIONS USED IN onCreateView() (for code readability)
     private fun setupViewModelAndBinding(inflater: LayoutInflater, container: ViewGroup?) {
-        scanViewModel = ViewModelProvider(this).get(ScanViewModel::class.java)
+        scanViewModel = ViewModelProvider(this)[ScanViewModel::class.java]
         _binding = FragmentScanBinding.inflate(inflater, container, false)
     }
 
@@ -158,7 +156,7 @@ class ScanFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Bluetooth required!")
                 .setMessage("Please enable Bluetooth. Thanks")
-                .setPositiveButton("Ok") { dialog, which ->
+                .setPositiveButton("Ok") { _, _ ->
                     // Respond to positive button press
 
                 }
@@ -229,10 +227,6 @@ class ScanFragment : Fragment() {
         }
         bleScanner.stopScan(scanCallback)
         isScanning = false
-    }
-
-    private fun Fragment.requestPermission(permission: String, requestCode: Int) {
-        ActivityCompat.requestPermissions(requireActivity(), arrayOf(permission), requestCode)
     }
 
 

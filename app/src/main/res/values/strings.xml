@@ -27,4 +27,6 @@
     <string name="text_apple_settings">Apply Apple\'s settings</string>
     <string name="title_switch_tracking_protection">Tracking Protection</string>
     <string name="subtext_switch_tracking_protection">Notifies about Bluetooth Low Energy trackers following you.</string>
+    <string name="scan_button_stop">Stop</string>
+    <string name="scan_button_scan">Scan</string>
 </resources>
