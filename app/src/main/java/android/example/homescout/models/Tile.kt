@@ -1,12 +1,12 @@
 package android.example.homescout.models
 
-import android.util.Log
+import timber.log.Timber
 
 class Tile : DeviceType {
 
     override val type = "Tile"
 
     override fun printManufacturer() {
-        Log.i("BluetoothAPILogger", "Tile")
+        Timber.i( "Tile")
     }
 }

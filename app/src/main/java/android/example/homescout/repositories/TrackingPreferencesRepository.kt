@@ -1,6 +1,5 @@
-package android.example.homescout.ui.settings
+package android.example.homescout.repositories
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -26,7 +25,7 @@ class TrackingPreferencesRepository @Inject constructor(private val dataStore: D
     }
 
     val distance = dataStore.data.map { preferences ->
-        // Log.i("TrackingPreferencesRepository", "distance: ${preferences[PreferenceKeys.DISTANCE]}")
+        // Timber.i( "distance: ${preferences[PreferenceKeys.DISTANCE]}")
         preferences[PreferenceKeys.DISTANCE] ?: 250.0f
     }
 

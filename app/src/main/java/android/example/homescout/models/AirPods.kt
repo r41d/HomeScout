@@ -1,12 +1,12 @@
 package android.example.homescout.models
 
-import android.util.Log
+import timber.log.Timber
 
 class AirPods : DeviceType {
 
     override val type = "AirPods"
 
     override fun printManufacturer() {
-        Log.i("BluetoothAPILogger", "AirPods")
+        Timber.i( "AirPods")
     }
 }

@@ -8,24 +8,24 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.example.homescout.BluetoothAPILogger
+import android.example.homescout.utils.BluetoothAPILogger
 import android.example.homescout.PermissionAppIntro
+import android.example.homescout.databinding.FragmentScanBinding
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import android.example.homescout.databinding.FragmentScanBinding
-import android.os.Build
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 
 
 private const val ENABLE_BLUETOOTH_REQUEST_CODE = 1
@@ -187,7 +187,7 @@ class ScanFragment : Fragment() {
                 scanResultAdapter.notifyItemChanged(indexQuery)
             } else { // found new device
 //                with(result.device) {
-//                    //Log.i("ScanCallback", "Found BLE device! Name: ${name ?: "Unnamed"}, address: $address")
+//                    //Timber.i( address: $address")
 //                }
                 scanResults.add(result)
                 scanResultAdapter.notifyItemInserted(scanResults.size - 1)
@@ -195,7 +195,7 @@ class ScanFragment : Fragment() {
         }
 
         override fun onScanFailed(errorCode: Int) {
-            Log.e("ScanCallback", "onScanFailed: code $errorCode")
+            Timber.i("onScanFailed: code $errorCode")
         }
     }
 

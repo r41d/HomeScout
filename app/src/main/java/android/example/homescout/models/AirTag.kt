@@ -1,12 +1,12 @@
 package android.example.homescout.models
 
-import android.util.Log
+import timber.log.Timber
 
 class AirTag : DeviceType {
 
     override val type = "AirTag"
 
     override fun printManufacturer() {
-        Log.i("BluetoothAPILogger", "AirTag")
+        Timber.i( "AirTag")
     }
 }

@@ -1,12 +1,12 @@
 package android.example.homescout.models
 
-import android.util.Log
+import timber.log.Timber
 
 class Unknown : DeviceType {
 
     override val type = "Unknown"
 
     override fun printManufacturer() {
-        Log.i("BluetoothAPILogger", "Unknown")
+        Timber.i( "Unknown")
     }
 }

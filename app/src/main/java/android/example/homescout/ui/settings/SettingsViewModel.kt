@@ -1,8 +1,7 @@
 package android.example.homescout.ui.settings
 
-import android.util.Log
+import android.example.homescout.repositories.TrackingPreferencesRepository
 import androidx.lifecycle.*
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

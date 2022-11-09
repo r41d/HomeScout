@@ -10,10 +10,10 @@ interface UserPositionDao {
     suspend fun insertUserPosition(userPosition: UserPosition)
 
     @Query("SELECT * FROM user_position_table ORDER BY timestampInMilliSeconds DESC")
-    fun getAllBLEDevicesSortedByDate() : LiveData<List<UserPosition>>
+    fun getAllUserPositionsSortedByDate() : LiveData<List<UserPosition>>
 
     @Delete
-    suspend fun deleteUserPositin(userPosition: UserPosition)
+    suspend fun deleteUserPosition(userPosition: UserPosition)
 
     @Query("DELETE FROM user_position_table WHERE timestampInMilliSeconds <= (strftime('%s','now', '- 1 hour') * 1000)")
     suspend fun deleteUserPositionOlderThanOneHour()

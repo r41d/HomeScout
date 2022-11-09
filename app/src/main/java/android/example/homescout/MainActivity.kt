@@ -7,19 +7,13 @@ import android.example.homescout.databinding.ActivityMainBinding
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.preferences.core.edit
-import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 
 private const val CHANNEL_ID = "1"

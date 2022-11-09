@@ -2,7 +2,6 @@ package android.example.homescout.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 
 @Database(
     entities = [BLEDevice::class, UserPosition::class],
