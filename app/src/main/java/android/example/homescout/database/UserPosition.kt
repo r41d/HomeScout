@@ -6,7 +6,8 @@ import com.google.android.gms.maps.model.LatLng
 
 @Entity(tableName = "user_position_table")
 data class UserPosition(
-    var location: LatLng,
+    var lat: Double,
+    var lng: Double,
     var timestampInMilliSeconds: Long = 0L
 ) {
     @PrimaryKey

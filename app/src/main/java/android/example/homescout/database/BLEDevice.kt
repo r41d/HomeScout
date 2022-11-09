@@ -10,8 +10,9 @@ import java.sql.Timestamp
 data class BLEDevice(
     var macAddress: String? = null,
     var timestampInMilliSeconds: Long = 0L,
-    var location: LatLng,
-    var type: DeviceType
+    var lat: Double,
+    var lng: Double,
+    var type: String
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null

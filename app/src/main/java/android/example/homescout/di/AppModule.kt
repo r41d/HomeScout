@@ -1,6 +1,9 @@
 package android.example.homescout.di
 
 import android.content.Context
+import android.example.homescout.database.HomeScoutDatabase
+import android.example.homescout.utils.Constants.HOMESCOUT_DATABASE_NAME
+import android.example.homescout.utils.Constants.TRACKING_PREFERENCES
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.SharedPreferencesMigration
@@ -8,6 +11,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,11 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
-private const val TRACKING_PREFERENCES = "tracking_preferences"
-
 @InstallIn(SingletonComponent::class)
 @Module
-object DataStoreModule {
+object AppModule {
 
     @Singleton
     @Provides
@@ -36,4 +38,20 @@ object DataStoreModule {
             produceFile = { appContext.preferencesDataStoreFile(TRACKING_PREFERENCES) }
         )
     }
+
+    @Singleton
+    @Provides
+    fun provideHomeScoutDatabase(@ApplicationContext appContext: Context) = Room.databaseBuilder(
+        appContext,
+        HomeScoutDatabase::class.java,
+        HOMESCOUT_DATABASE_NAME
+    ).build()
+
+    @Singleton
+    @Provides
+    fun provideBLEDeviceDao(db: HomeScoutDatabase) = db.getBLEDeviceDao()
+
+    @Singleton
+    @Provides
+    fun provideUserPositionDao(db: HomeScoutDatabase) = db.getUserPositionDao()
 }
