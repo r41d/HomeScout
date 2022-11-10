@@ -14,8 +14,8 @@ import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_START_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_SERVICE
 import android.example.homescout.utils.Constants.CHANNEL_ID_TRACKING_PROTECTION
-import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_NAME
-import android.example.homescout.utils.Constants.NOTIFICATION_ID
+import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_TRACKING
+import android.example.homescout.utils.Constants.NOTIFICATION_ID_TRACKING
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,12 +56,12 @@ class TrackingService () : LifecycleService() {
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID_TRACKING_PROTECTION)
             .setAutoCancel(false)
             .setOngoing(true)
-            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setSmallIcon(R.drawable.ic_protect_48px)
             .setContentTitle("Home Scout")
             .setContentText("Tracking service is running.")
             .setContentIntent(getMainActivityPendingIntent())
 
-        startForeground(NOTIFICATION_ID, notificationBuilder.build())
+        startForeground(NOTIFICATION_ID_TRACKING, notificationBuilder.build())
     }
 
     private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
@@ -76,7 +76,7 @@ class TrackingService () : LifecycleService() {
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         val channel = NotificationChannel(
             CHANNEL_ID_TRACKING_PROTECTION,
-            NOTIFICATION_CHANNEL_NAME,
+            NOTIFICATION_CHANNEL_TRACKING,
             IMPORTANCE_LOW
         )
         notificationManager.createNotificationChannel(channel)

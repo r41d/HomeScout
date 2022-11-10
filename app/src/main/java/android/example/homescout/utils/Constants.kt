@@ -12,11 +12,16 @@ object Constants {
     // Bluetooth
     const val APPLE_COMPANY_IDENTIFIER = 76
 
-    // Notifications
-    const val CHANNEL_ID_DEVICE_FOUND = "device_found_channel"
+    // Notifications for found device
+    const val CHANNEL_ID_FOUND_DEVICE = "found_device_channel"
+    const val NOTIFICATION_CHANNEL_FOUND_DEVICE = "found_device"
+    const val NOTIFICATION_ID_FOUND_DEVICE = 1
+    const val ACTION_SHOW_NOTIFICATIONS_FRAGMENT = "ACTION_SHOW_NOTIFICATIONS_FRAGMENT"
+
+    // Notifications for tracking service
     const val CHANNEL_ID_TRACKING_PROTECTION = "tracking_protection_channel"
-    const val NOTIFICATION_CHANNEL_NAME = "tracking"
-    const val NOTIFICATION_ID = 1
+    const val NOTIFICATION_CHANNEL_TRACKING = "tracking"
+    const val NOTIFICATION_ID_TRACKING = 2
     const val ACTION_SHOW_SETTINGS_FRAGMENT = "ACTION_SHOW_SETTINGS_FRAGMENT"
 
     // Service
