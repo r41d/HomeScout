@@ -2,6 +2,7 @@ package android.example.homescout.models
 
 import android.annotation.SuppressLint
 import android.bluetooth.le.ScanResult
+import android.example.homescout.utils.Constants.APPLE_COMPANY_IDENTIFIER
 import android.os.ParcelUuid
 import kotlin.experimental.and
 
@@ -16,7 +17,7 @@ class DeviceTypeManager {
             if (result.device.name == "Smart Tag") return GalaxySmartTag()
 
             // Identification of AirTag and Chipolo ONE Spot
-            val appleManufacturerSpecificData = result.scanRecord?.manufacturerSpecificData?.get(APPLE)
+            val appleManufacturerSpecificData = result.scanRecord?.manufacturerSpecificData?.get(APPLE_COMPANY_IDENTIFIER)
             if (appleManufacturerSpecificData != null) {
 
                 // according to AirGuard https://dl.acm.org/doi/pdf/10.1145/3507657.3528546
@@ -41,7 +42,5 @@ class DeviceTypeManager {
             // Could not identify the device
             return Unknown()
         }
-
-        private const val APPLE = 76
     }
 }

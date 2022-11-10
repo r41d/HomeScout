@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.example.homescout.databinding.FragmentWelcomeBinding
 import android.example.homescout.ui.intro.PermissionAppIntro
+import android.example.homescout.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +18,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
-const val LOCATION_PERMISSION_REQUEST_CODE = 1
+
 
 class WelcomeFragment : Fragment() {
 
