@@ -8,7 +8,6 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.example.homescout.R
-import android.example.homescout.repositories.TrackingPreferencesRepository
 import android.example.homescout.ui.main.MainActivity
 import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_START_SERVICE
@@ -20,29 +19,32 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class TrackingService () : LifecycleService() {
 
-    // TODO: replace this with switch from settingsViewModel or TrackingRepository
-    @Inject
-    lateinit var trackingPreferencesRepository : TrackingPreferencesRepository
-
+    var isServiceRunning = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             when(it.action) {
 
                 ACTION_START_SERVICE -> {
-                    Timber.i("Start Service")
-                    startForegroundService()
+                    if (!isServiceRunning) {
+                        Timber.i("Start Service")
+                        startForegroundService()
+                        isServiceRunning = true
+                    }
                 }
 
                 ACTION_STOP_SERVICE -> {
-                    Timber.i("Stop Service") }
+                    Timber.i("Stop Service")
+                    isServiceRunning = false
+                    stopSelf()
                 }
             }
+        }
 
         return super.onStartCommand(intent, flags, startId)
     }
