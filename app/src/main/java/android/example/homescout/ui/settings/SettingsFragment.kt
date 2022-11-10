@@ -1,7 +1,11 @@
 package android.example.homescout.ui.settings
 
+import android.content.Intent
 import android.example.homescout.R
 import android.example.homescout.databinding.FragmentSettingsBinding
+import android.example.homescout.services.TrackingService
+import android.example.homescout.utils.Constants.ACTION_START_SERVICE
+import android.example.homescout.utils.Constants.ACTION_STOP_SERVICE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -84,7 +87,7 @@ class SettingsFragment : Fragment() {
     }
 
 
-    // FUNCTIONS USED IN onCreateView() (for code readability)
+    // FUNCTIONS USED IN LIFECYCLE (for code readability)
     private fun setupViewModelAndBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -113,8 +116,12 @@ class SettingsFragment : Fragment() {
 
     private fun setupSwitchTrackingProtection() {
         binding.switchTrackingProtection.setOnCheckedChangeListener { _, checked ->
-            Timber.i( "value: ${checked}")
             settingsViewModel.onSwitchToggled(checked)
+            if (checked) {
+                sendCommandToService(ACTION_START_SERVICE)
+            } else {
+                sendCommandToService(ACTION_STOP_SERVICE)
+            }
         }
     }
 
@@ -207,4 +214,12 @@ class SettingsFragment : Fragment() {
         binding.sliderTime.addOnSliderTouchListener(touchListenerTime)
         binding.sliderOccurrences.addOnSliderTouchListener(touchListenerOccurrences)
     }
+
+    // PRIVATE FUNCTIONS
+    private fun sendCommandToService(action: String) =
+        Intent(requireContext(), TrackingService::class.java).also {
+            it.action = action
+            // does not actually start service, but delivers the intent to the service
+            requireContext().startService(it)
+        }
 }
