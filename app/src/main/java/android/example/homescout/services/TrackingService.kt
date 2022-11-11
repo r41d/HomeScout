@@ -18,8 +18,11 @@ import android.example.homescout.utils.Constants.CHANNEL_ID_TRACKING_PROTECTION
 import android.example.homescout.utils.Constants.LOCATION_UPDATE_INTERVAL
 import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_TRACKING
 import android.example.homescout.utils.Constants.NOTIFICATION_ID_TRACKING
+import android.example.homescout.utils.Constants.STATIONARY_MOVEMENT_RADIUS
 import android.location.Location
 import android.os.Looper
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -37,6 +40,7 @@ typealias Coordinates = MutableList<LatLng>
 class TrackingService () : LifecycleService() {
 
     var isServiceRunning = false
+    private var distances = mutableListOf<Float>()
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -57,6 +61,10 @@ class TrackingService () : LifecycleService() {
                 ACTION_START_SERVICE -> {
                     if (!isServiceRunning) {
                         Timber.i("Start Service")
+                        Toast.makeText(
+                            applicationContext,
+                            "Start Service",
+                            LENGTH_LONG).show()
                         startForegroundService()
                         isServiceRunning = true
                     }
@@ -120,11 +128,10 @@ class TrackingService () : LifecycleService() {
         userPositions.postValue(mutableListOf())
     }
 
-    private fun addPosition(location: Location?) {
-        location?.let {
-            val currentPosition = LatLng(location.latitude, location.longitude)
+    private fun addPosition(currentLocation: Location?) {
+        currentLocation?.let {
             userPositions.value?.apply {
-                add(currentPosition)
+                add(LatLng(currentLocation.latitude, currentLocation.longitude))
                 userPositions.postValue(this) // in case MutableLiveData is displayed somewhere
             }
         }
@@ -135,11 +142,39 @@ class TrackingService () : LifecycleService() {
             super.onLocationResult(result)
             result.locations.let { locations ->
                 for (location in locations){
-                    Timber.i("NEW LOCATION: lat: ${location.latitude}, lng: ${location.longitude}")
                     addPosition(location)
+                }
+                Timber.i("largerThan200: ${isDistanceLargerThanTwoHundredMeters()}")
+                if (isDistanceLargerThanTwoHundredMeters()) {
+                    Toast.makeText(
+                        applicationContext,
+                        "User has left stationary position",
+                        LENGTH_LONG).show()
                 }
             }
         }
+    }
+
+    private fun isDistanceLargerThanTwoHundredMeters(): Boolean {
+
+        val userPositions = userPositions.value!!
+        val firstUserPosition = userPositions.first()
+
+        val firstLocation = Location("firstLocation").apply {
+            latitude = firstUserPosition.latitude
+            longitude = firstUserPosition.longitude
+        }
+
+        for (position in userPositions) {
+            val pastLocation = Location("pastLocation").apply {
+                latitude = position.latitude
+                longitude = position.longitude
+            }
+            val distance = firstLocation.distanceTo(pastLocation)
+            distances.add(distance)
+        }
+
+        return distances.max() >= STATIONARY_MOVEMENT_RADIUS
     }
 
     private fun updateLocationTracking() {
