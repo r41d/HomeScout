@@ -1,15 +1,19 @@
 package android.example.homescout.ui.settings
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.example.homescout.R
 import android.example.homescout.databinding.FragmentSettingsBinding
 import android.example.homescout.services.TrackingService
+import android.example.homescout.ui.intro.PermissionAppIntro
 import android.example.homescout.utils.Constants.ACTION_START_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_SERVICE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -68,6 +72,8 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+
+
         setupViewModelAndBinding(inflater, container)
         setupSwitchTrackingProtection()
         setupSliderDistance()
@@ -116,6 +122,17 @@ class SettingsFragment : Fragment() {
 
     private fun setupSwitchTrackingProtection() {
         binding.switchTrackingProtection.setOnCheckedChangeListener { _, checked ->
+
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                binding.switchTrackingProtection.isChecked = false
+                startActivity(Intent(requireContext(), PermissionAppIntro::class.java))
+                return@setOnCheckedChangeListener
+            }
+
             settingsViewModel.onSwitchToggled(checked)
             if (checked) {
                 sendCommandToService(ACTION_START_SERVICE)
