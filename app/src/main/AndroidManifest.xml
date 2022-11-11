@@ -40,6 +40,8 @@
         </activity>
 
         <service android:name=".services.TrackingService"
+            android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="location" />
 
         <activity android:name=".ui.intro.PermissionAppIntro"

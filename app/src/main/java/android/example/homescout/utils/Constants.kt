@@ -27,4 +27,6 @@ object Constants {
     // Service
     const val ACTION_START_SERVICE = "ACTION_START_SERVICE"
     const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
+    const val LOCATION_UPDATE_INTERVAL = 5000L
+    const val FASTEST_LOCATION_INTERVAL = 2000L
 }
