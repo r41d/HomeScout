@@ -19,6 +19,7 @@ import android.example.homescout.utils.Constants.LOCATION_UPDATE_INTERVAL
 import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_TRACKING
 import android.example.homescout.utils.Constants.NOTIFICATION_ID_TRACKING
 import android.example.homescout.utils.Constants.STATIONARY_MOVEMENT_RADIUS
+import android.example.homescout.utils.RingBuffer
 import android.location.Location
 import android.os.Looper
 import android.widget.Toast
@@ -26,7 +27,6 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.*
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.LatLng
@@ -34,7 +34,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 
-typealias Coordinates = MutableList<LatLng>
 
 @AndroidEntryPoint
 class TrackingService () : LifecycleService() {
@@ -45,10 +44,11 @@ class TrackingService () : LifecycleService() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     companion object {
-        // mutableLiveData needed?
-        val userPositions = MutableLiveData<Coordinates>()
+        val userPositionsTail = RingBuffer<LatLng>(5)
     }
 
+
+    // LIFECYCLE FUNCTIONS
     override fun onCreate() {
         super.onCreate()
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
@@ -74,6 +74,7 @@ class TrackingService () : LifecycleService() {
                     Timber.i("Stop Service")
                     isServiceRunning = false
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+                    userPositionsTail.clear()
                     stopSelf()
                 }
             }
@@ -82,10 +83,9 @@ class TrackingService () : LifecycleService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    // FUNCTIONS FOR TO START SERVICE
-    private fun startForegroundService() {
 
-        postInitialValues()
+    // FUNCTIONS TO START SERVICE
+    private fun startForegroundService() {
 
         updateLocationTracking()
 
@@ -123,29 +123,23 @@ class TrackingService () : LifecycleService() {
         notificationManager.createNotificationChannel(channel)
     }
 
-    // FUNCTIONS FOR LOCATION TRACKING
-    private fun postInitialValues() {
-        userPositions.postValue(mutableListOf())
-    }
 
+    // FUNCTIONS FOR LOCATION TRACKING
     private fun addPosition(currentLocation: Location?) {
         currentLocation?.let {
-            userPositions.value?.apply {
-                add(LatLng(currentLocation.latitude, currentLocation.longitude))
-                userPositions.postValue(this) // in case MutableLiveData is displayed somewhere
-            }
+            userPositionsTail.put(LatLng(currentLocation.latitude, currentLocation.longitude))
         }
     }
 
-    val locationCallback = object : LocationCallback() {
+    private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
             result.locations.let { locations ->
                 for (location in locations){
                     addPosition(location)
                 }
-                Timber.i("largerThan200: ${isDistanceLargerThanTwoHundredMeters()}")
-                if (isDistanceLargerThanTwoHundredMeters()) {
+                Timber.i("largerThan200: ${hasUserLeftStationaryMovementRadius()}")
+                if (hasUserLeftStationaryMovementRadius()) {
                     Toast.makeText(
                         applicationContext,
                         "User has left stationary position",
@@ -155,17 +149,17 @@ class TrackingService () : LifecycleService() {
         }
     }
 
-    private fun isDistanceLargerThanTwoHundredMeters(): Boolean {
+    private fun hasUserLeftStationaryMovementRadius(): Boolean {
 
-        val userPositions = userPositions.value!!
-        val firstUserPosition = userPositions.first()
+        // val userPositions = userPositions.value!!
+        val firstUserPosition = userPositionsTail.first()
 
         val firstLocation = Location("firstLocation").apply {
             latitude = firstUserPosition.latitude
             longitude = firstUserPosition.longitude
         }
 
-        for (position in userPositions) {
+        for (position in userPositionsTail.getElements()) {
             val pastLocation = Location("pastLocation").apply {
                 latitude = position.latitude
                 longitude = position.longitude
@@ -191,7 +185,6 @@ class TrackingService () : LifecycleService() {
         ) {
             return
         }
-
 
         val locationRequest = LocationRequest.Builder(
             PRIORITY_HIGH_ACCURACY,
