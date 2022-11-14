@@ -39,12 +39,12 @@ import timber.log.Timber
 class TrackingService () : LifecycleService() {
 
     var isServiceRunning = false
-    private var distances = mutableListOf<Float>()
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     companion object {
-        val userPositionsTail = RingBuffer<LatLng>(5)
+        val userPositionsTail = RingBuffer<LatLng>(12)
+        val distances = RingBuffer<Float>(12)
     }
 
 
@@ -75,6 +75,7 @@ class TrackingService () : LifecycleService() {
                     isServiceRunning = false
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                     userPositionsTail.clear()
+                    distances.clear()
                     stopSelf()
                 }
             }
@@ -138,18 +139,23 @@ class TrackingService () : LifecycleService() {
                 for (location in locations){
                     addPosition(location)
                 }
-                Timber.i("largerThan200: ${hasUserLeftStationaryMovementRadius()}")
-                if (hasUserLeftStationaryMovementRadius()) {
+                Timber.i("isUserStationary: ${isUserStationary()}")
+                if (isUserStationary()) {
                     Toast.makeText(
                         applicationContext,
-                        "User has left stationary position",
+                        "User is stationary.",
+                        LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "User is moving",
                         LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    private fun hasUserLeftStationaryMovementRadius(): Boolean {
+    private fun isUserStationary(): Boolean {
 
         // val userPositions = userPositions.value!!
         val firstUserPosition = userPositionsTail.first()
@@ -165,10 +171,10 @@ class TrackingService () : LifecycleService() {
                 longitude = position.longitude
             }
             val distance = firstLocation.distanceTo(pastLocation)
-            distances.add(distance)
+            distances.put(distance)
         }
 
-        return distances.max() >= STATIONARY_MOVEMENT_RADIUS
+        return distances.getElements().max() <= STATIONARY_MOVEMENT_RADIUS
     }
 
     private fun updateLocationTracking() {
