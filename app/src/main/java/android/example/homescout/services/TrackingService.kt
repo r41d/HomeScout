@@ -12,9 +12,10 @@ import android.content.pm.PackageManager
 import android.example.homescout.R
 import android.example.homescout.ui.main.MainActivity
 import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
-import android.example.homescout.utils.Constants.ACTION_START_SERVICE
-import android.example.homescout.utils.Constants.ACTION_STOP_SERVICE
+import android.example.homescout.utils.Constants.ACTION_START_TRACKING_SERVICE
+import android.example.homescout.utils.Constants.ACTION_STOP_TRACKING_SERVICE
 import android.example.homescout.utils.Constants.CHANNEL_ID_TRACKING_PROTECTION
+import android.example.homescout.utils.Constants.INTERVAL_BLE_SCAN
 import android.example.homescout.utils.Constants.LOCATION_UPDATE_INTERVAL
 import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_TRACKING
 import android.example.homescout.utils.Constants.NOTIFICATION_ID_TRACKING
@@ -22,8 +23,6 @@ import android.example.homescout.utils.Constants.STATIONARY_MOVEMENT_RADIUS
 import android.example.homescout.utils.RingBuffer
 import android.location.Location
 import android.os.Looper
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -32,7 +31,6 @@ import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-
 
 
 @AndroidEntryPoint
@@ -56,21 +54,18 @@ class TrackingService () : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            when(it.action) {
 
-                ACTION_START_SERVICE -> {
+            when (it.action) {
+
+                ACTION_START_TRACKING_SERVICE -> {
                     if (!isServiceRunning) {
                         Timber.i("Start Service")
-                        Toast.makeText(
-                            applicationContext,
-                            "Start Service",
-                            LENGTH_LONG).show()
                         startForegroundService()
                         isServiceRunning = true
                     }
                 }
 
-                ACTION_STOP_SERVICE -> {
+                ACTION_STOP_TRACKING_SERVICE -> {
                     Timber.i("Stop Service")
                     isServiceRunning = false
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
@@ -133,23 +128,22 @@ class TrackingService () : LifecycleService() {
     }
 
     private val locationCallback = object : LocationCallback() {
+
+        private var lastBluetoothScan = System.currentTimeMillis()
+
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
             result.locations.let { locations ->
                 for (location in locations){
                     addPosition(location)
                 }
-                Timber.i("isUserStationary: ${isUserStationary()}")
-                if (isUserStationary()) {
-                    Toast.makeText(
-                        applicationContext,
-                        "User is stationary.",
-                        LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        "User is moving",
-                        LENGTH_LONG).show()
+                if (isUserStationary()) { // change it to NOT isUserStationary() to start scanning for ble devices
+                    //
+                    val currentTimeInMillis = System.currentTimeMillis()
+                    if (currentTimeInMillis - lastBluetoothScan > INTERVAL_BLE_SCAN) {
+                        Timber.i("start scanning")
+                        lastBluetoothScan = currentTimeInMillis
+                    }
                 }
             }
         }
@@ -157,7 +151,6 @@ class TrackingService () : LifecycleService() {
 
     private fun isUserStationary(): Boolean {
 
-        // val userPositions = userPositions.value!!
         val firstUserPosition = userPositionsTail.first()
 
         val firstLocation = Location("firstLocation").apply {
