@@ -43,6 +43,9 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location" />
+        <service android:name=".services.BluetoothScanningService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity android:name=".ui.intro.PermissionAppIntro"
             android:label="Necessary Permissions" />

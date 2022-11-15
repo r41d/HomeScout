@@ -14,6 +14,8 @@ import android.example.homescout.ui.intro.PermissionAppIntro
 import android.example.homescout.utils.BluetoothAPILogger
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -212,6 +214,12 @@ class ScanFragment : Fragment() {
             startActivity(Intent(requireContext(), PermissionAppIntro::class.java))
             return
         }
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            isScanning = false
+            bleScanner.stopScan(scanCallback)
+        }, 1000)
+
         bleScanner.startScan(null, scanSettings, scanCallback)
         isScanning = true
     }
