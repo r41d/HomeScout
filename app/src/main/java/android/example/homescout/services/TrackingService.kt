@@ -20,7 +20,8 @@ import android.example.homescout.utils.Constants.CHANNEL_ID_TRACKING_PROTECTION
 import android.example.homescout.utils.Constants.LOCATION_UPDATE_INTERVAL
 import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_TRACKING
 import android.example.homescout.utils.Constants.NOTIFICATION_ID_TRACKING
-import android.example.homescout.utils.Constants.STATIONARY_MOVEMENT_RADIUS
+import android.example.homescout.utils.Constants.SIZE_OF_APPROX_2_MINUTES
+import android.example.homescout.utils.Constants.STATIONARY_MOVING_DISTANCE
 import android.example.homescout.utils.RingBuffer
 import android.location.Location
 import android.os.Looper
@@ -31,30 +32,22 @@ import androidx.lifecycle.LifecycleService
 import com.google.android.gms.location.*
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.LatLng
-import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 
-@AndroidEntryPoint
 class TrackingService : LifecycleService() {
 
     var isServiceRunning = false
     var isBluetoothServiceRunning = false
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    // lateinit var bleScanner : BluetoothLowEnergyScanner
 
-    companion object {
-        val userPositionsTail = RingBuffer<LatLng>(12)
-        val distances = RingBuffer<Float>(12)
-    }
-
+    private val userPositionsHistoryBuffer = RingBuffer<LatLng>(SIZE_OF_APPROX_2_MINUTES)
 
     // LIFECYCLE FUNCTIONS
     override fun onCreate() {
         super.onCreate()
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        // bleScanner = BluetoothLowEnergyScanner(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -74,10 +67,8 @@ class TrackingService : LifecycleService() {
                     Timber.i("Stop Service")
                     isServiceRunning = false
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-                    userPositionsTail.clear()
-                    distances.clear()
-                    sendCommandToService(ACTION_STOP_BLUETOOTH_SERVICE)
-                    isBluetoothServiceRunning = false
+                    userPositionsHistoryBuffer.clear()
+                    stopBluetoothScanningService()
                     stopSelf()
                 }
             }
@@ -130,7 +121,7 @@ class TrackingService : LifecycleService() {
     // FUNCTIONS FOR LOCATION TRACKING
     private fun addPosition(currentLocation: Location?) {
         currentLocation?.let {
-            userPositionsTail.put(LatLng(currentLocation.latitude, currentLocation.longitude))
+            userPositionsHistoryBuffer.put(LatLng(currentLocation.latitude, currentLocation.longitude))
         }
     }
 
@@ -145,48 +136,52 @@ class TrackingService : LifecycleService() {
                 }
             }
 
-            if (!isUserStationary() && !isBluetoothServiceRunning) {
+            val isUserStationary = isUserStationary()
+
+            if (!isUserStationary && !isBluetoothServiceRunning) {
                 Toast.makeText(
                     applicationContext,
                     "User moves -> start ble service",
                     Toast.LENGTH_SHORT
                 ).show()
-                sendCommandToService(ACTION_START_BLUETOOTH_SERVICE)
-                isBluetoothServiceRunning = true
+                startBluetoothTrackingService()
                 return
             }
 
-            if (isUserStationary() && isBluetoothServiceRunning) {
+            if (isUserStationary && isBluetoothServiceRunning) {
                 Toast.makeText(
                     applicationContext,
                     "User stationary -> stop ble service",
                     Toast.LENGTH_SHORT
                 ).show()
-                sendCommandToService(ACTION_STOP_BLUETOOTH_SERVICE)
-                isBluetoothServiceRunning = false
+                stopBluetoothScanningService()
             }
         }
     }
 
     private fun isUserStationary(): Boolean {
 
-        val firstUserPosition = userPositionsTail.first()
+        val allDistancesTraveled = mutableListOf<Float>()
+        val orderedUserPositionBuffer = userPositionsHistoryBuffer.getElementsOrderedTailToHead()
+        val secondLastIndex = orderedUserPositionBuffer.size - 2
 
-        val firstLocation = Location("firstLocation").apply {
-            latitude = firstUserPosition.latitude
-            longitude = firstUserPosition.longitude
-        }
+        for (i in 0..secondLastIndex) {
 
-        for (position in userPositionsTail.getElements()) {
-            val pastLocation = Location("pastLocation").apply {
-                latitude = position.latitude
-                longitude = position.longitude
+            val currentLocation = Location("currentLocation").apply {
+                latitude = orderedUserPositionBuffer[i].latitude
+                longitude = orderedUserPositionBuffer[i].longitude
             }
-            val distance = firstLocation.distanceTo(pastLocation)
-            distances.put(distance)
+
+            val nextLocation = Location("nextLocation").apply {
+                latitude = orderedUserPositionBuffer[i + 1].latitude
+                longitude = orderedUserPositionBuffer[i + 1].longitude
+            }
+
+            val distanceBetweenTwoLocations = currentLocation.distanceTo(nextLocation)
+            allDistancesTraveled.add(distanceBetweenTwoLocations)
         }
 
-        return distances.getElements().max() <= STATIONARY_MOVEMENT_RADIUS
+        return allDistancesTraveled.sum() <= STATIONARY_MOVING_DISTANCE
     }
 
     private fun updateLocationTracking() {
@@ -224,5 +219,16 @@ class TrackingService : LifecycleService() {
             // does not actually start service, but delivers the intent to the service
             applicationContext.startService(it)
         }
+
+
+    private fun startBluetoothTrackingService() {
+        sendCommandToService(ACTION_START_BLUETOOTH_SERVICE)
+        isBluetoothServiceRunning = true
+    }
+
+    private fun stopBluetoothScanningService() {
+        sendCommandToService(ACTION_STOP_BLUETOOTH_SERVICE)
+        isBluetoothServiceRunning = false
+    }
 
 }

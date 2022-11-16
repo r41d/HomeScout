@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import timber.log.Timber
 
 
@@ -60,21 +59,6 @@ class BluetoothScanningService : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        if (!isBluetoothEnabled) {
-
-            MaterialAlertDialogBuilder(applicationContext)
-                .setTitle("Bluetooth required!")
-                .setMessage("Please enable Bluetooth. Thanks")
-                .setPositiveButton("Ok") { _, _ ->
-                    // Respond to positive button press
-
-                }
-                .show()
-
-            stopSelf()
-            return super.onStartCommand(intent, flags, startId)
-        }
 
         intent?.let {
 
