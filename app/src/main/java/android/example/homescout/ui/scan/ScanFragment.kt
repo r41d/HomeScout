@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,9 +36,6 @@ class ScanFragment : Fragment() {
 
 
     // PROPERTIES
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private var _binding: FragmentScanBinding? = null
     private val binding get() = _binding!!
 
@@ -92,16 +90,9 @@ class ScanFragment : Fragment() {
         setOnClickListenerForScanButton()
         setupRecyclerView()
 
-        checkIfBluetoothIsEnabled()
-
         return binding.root
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        checkIfBluetoothIsEnabled()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -125,6 +116,22 @@ class ScanFragment : Fragment() {
 
     private fun setOnClickListenerForScanButton() {
         binding.buttonScan.setOnClickListener {
+            if (!isBluetoothEnabled) {
+
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Enable Bluetooth required!")
+                    .setMessage("Please turn on Bluetooth. Thanks.")
+                    .setPositiveButton("Ok") { _, _ ->
+                        // Respond to positive button press
+                        val intentBluetooth = Intent().apply {
+                            action = Settings.ACTION_BLUETOOTH_SETTINGS
+                        }
+                        requireContext().startActivity(intentBluetooth)
+                    }
+                    .show()
+                return@setOnClickListener
+            }
+
             if (isScanning) {
                 stopBleScan()
             } else {
@@ -160,6 +167,10 @@ class ScanFragment : Fragment() {
                 .setMessage("Please enable Bluetooth. Thanks")
                 .setPositiveButton("Ok") { _, _ ->
                     // Respond to positive button press
+                    val intentBluetooth = Intent().apply {
+                        action = Settings.ACTION_BLUETOOTH_SETTINGS
+                    }
+                    requireContext().startActivity(intentBluetooth)
 
                 }
                 .show()
@@ -236,16 +247,4 @@ class ScanFragment : Fragment() {
         bleScanner.stopScan(scanCallback)
         isScanning = false
     }
-
-
-    // Scan Filter Example (not intended to use so far)
-
-//    private val AirTagScanFilter = ScanFilter.Builder()
-//        .setManufacturerData(
-//            0x4C,
-//            byteArrayOf((0x12).toByte(), (0x19).toByte(), (0x10).toByte())
-//        )
-//        .build()
-
-
 }

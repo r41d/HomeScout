@@ -1,6 +1,8 @@
 package android.example.homescout.ui.settings
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.example.homescout.R
@@ -10,9 +12,11 @@ import android.example.homescout.ui.intro.PermissionAppIntro
 import android.example.homescout.utils.Constants.ACTION_START_TRACKING_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_TRACKING_SERVICE
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
@@ -63,6 +67,14 @@ class SettingsFragment : Fragment() {
                 settingsViewModel.updateOccurrences(slider.value)
             }
         }
+
+    private val isBluetoothEnabled : Boolean
+        get() = bluetoothAdapter.isEnabled
+
+    private val bluetoothAdapter: BluetoothAdapter by lazy {
+        val bluetoothManager = requireContext().getSystemService(AppCompatActivity.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter
+    }
 
 
     // LIFECYCLE FUNCTIONS
@@ -122,6 +134,25 @@ class SettingsFragment : Fragment() {
 
     private fun setupSwitchTrackingProtection() {
         binding.switchTrackingProtection.setOnCheckedChangeListener { _, checked ->
+
+            if (!isBluetoothEnabled) {
+
+                binding.switchTrackingProtection.isChecked = false
+
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Enable Bluetooth required!")
+                    .setMessage("Please turn on Bluetooth. Thanks.")
+                    .setPositiveButton("Ok") { _, _ ->
+                        // Respond to positive button press
+                        val intentBluetooth = Intent().apply {
+                            action = Settings.ACTION_BLUETOOTH_SETTINGS
+                        }
+                        requireContext().startActivity(intentBluetooth)
+                    }
+                    .show()
+                return@setOnCheckedChangeListener
+            }
+
 
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
