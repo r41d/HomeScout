@@ -41,6 +41,16 @@ class PermissionAppIntro : AppIntro() {
                     imageDrawable = R.drawable.ic_location_on_onboarding,
                     backgroundColorRes = R.color.purple_500
                 ))
+        addSlide(
+            AppIntroFragment.createInstance(
+                title = "Battery Optimization",
+                description = "For your safety, this app needs to run while locked. " +
+                        "Therefore, battery optimization needs to be granted.",
+                titleTypefaceFontRes = R.font.roboto_bold,
+                descriptionTypefaceFontRes = R.font.roboto,
+                imageDrawable = R.drawable.ic_batter_optimization_onboarding,
+                backgroundColorRes = R.color.purple_500
+            ))
         addSlide(AppIntroFragment.createInstance(
             title = "Thanks.",
             description = "I hope this app suits you :-)",
