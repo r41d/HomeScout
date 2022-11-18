@@ -13,8 +13,10 @@ import android.example.homescout.R
 import android.example.homescout.ui.main.MainActivity
 import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_START_BLUETOOTH_SERVICE
+import android.example.homescout.utils.Constants.ACTION_START_TRACKER_CLASSIFICATION_SERVICE
 import android.example.homescout.utils.Constants.ACTION_START_TRACKING_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_BLUETOOTH_SERVICE
+import android.example.homescout.utils.Constants.ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_TRACKING_SERVICE
 import android.example.homescout.utils.Constants.CHANNEL_ID_LOCATION_TRACKING
 import android.example.homescout.utils.Constants.LOCATION_UPDATE_INTERVAL
@@ -79,6 +81,7 @@ class LocationTrackingService : LifecycleService() {
                         Timber.i("Start Service")
                         isServiceRunning = true
                         startForegroundService()
+                        sendCommandToServiceX(ACTION_START_TRACKER_CLASSIFICATION_SERVICE)
                     }
                 }
 
@@ -88,6 +91,7 @@ class LocationTrackingService : LifecycleService() {
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                     userPositionsHistoryBuffer.clear()
                     stopBluetoothScanningService()
+                    sendCommandToServiceX(ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE)
                     stopSelf()
                 }
             }
@@ -110,7 +114,7 @@ class LocationTrackingService : LifecycleService() {
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID_LOCATION_TRACKING)
             .setAutoCancel(false)
             .setOngoing(true)
-            .setSmallIcon(R.drawable.ic_protect_48px)
+            .setSmallIcon(R.drawable.ic_location)
             .setContentTitle("Home Scout")
             .setContentText("Tracking service is running.")
             .setContentIntent(getMainActivityPendingIntent())
@@ -241,7 +245,6 @@ class LocationTrackingService : LifecycleService() {
             applicationContext.startService(it)
         }
 
-
     private fun startBluetoothScanningService() {
         sendCommandToService(ACTION_START_BLUETOOTH_SERVICE)
         isBluetoothServiceRunning = true
@@ -250,6 +253,21 @@ class LocationTrackingService : LifecycleService() {
     private fun stopBluetoothScanningService() {
         sendCommandToService(ACTION_STOP_BLUETOOTH_SERVICE)
         isBluetoothServiceRunning = false
+    }
+
+
+    private fun sendCommandToServiceX(action: String) =
+        Intent(applicationContext, TrackerClassificationService::class.java).also {
+            it.action = action
+            applicationContext.startService(it)
+        }
+
+    private fun startTrackerClassificationService() {
+        sendCommandToService(ACTION_START_TRACKER_CLASSIFICATION_SERVICE)
+    }
+
+    private fun stopTrackerClassificationService() {
+        sendCommandToService(ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE)
     }
 
 }

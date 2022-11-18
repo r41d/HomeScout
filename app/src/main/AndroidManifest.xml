@@ -47,6 +47,9 @@
         <service android:name=".services.BluetoothScanningService"
             android:enabled="true"
             android:exported="false" />
+        <service android:name=".services.TrackerClassificationService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity android:name=".ui.intro.PermissionAppIntro"
             android:label="Necessary Permissions" />
