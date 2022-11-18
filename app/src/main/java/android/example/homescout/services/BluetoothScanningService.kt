@@ -11,8 +11,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.example.homescout.R
+import android.example.homescout.database.BLEDevice
+import android.example.homescout.models.DeviceTypeManager
+import android.example.homescout.repositories.MainRepository
 import android.example.homescout.ui.main.MainActivity
-import android.example.homescout.utils.BluetoothAPILogger
 import android.example.homescout.utils.Constants
 import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_START_BLUETOOTH_SERVICE
@@ -21,17 +23,21 @@ import android.example.homescout.utils.Constants.CHANNEL_ID_BLUETOOTH_SCANNING
 import android.example.homescout.utils.Constants.INTERVAL_BLE_SCAN
 import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_BLUETOOTH
 import android.example.homescout.utils.Constants.SCAN_PERIOD
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.maps.model.LatLng
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class BluetoothScanningService : LifecycleService() {
 
 
@@ -41,8 +47,7 @@ class BluetoothScanningService : LifecycleService() {
     private var isServiceRunning = false
     private var isScanning = false
 
-    private val isBluetoothEnabled : Boolean
-        get() = bluetoothAdapter.isEnabled
+    private var lastKnownLocation : LatLng? = null
 
     private val bluetoothAdapter: BluetoothAdapter by lazy {
         val bluetoothManager = applicationContext.getSystemService(AppCompatActivity.BLUETOOTH_SERVICE) as BluetoothManager
@@ -53,9 +58,15 @@ class BluetoothScanningService : LifecycleService() {
         bluetoothAdapter.bluetoothLeScanner
     }
 
+    @Inject
+    lateinit var mainRepository : MainRepository
+
+
     override fun onCreate() {
+        TrackingService.lastKnownLocation.observe(this) {
+            lastKnownLocation = it
+        }
         super.onCreate()
-        Timber.i("Service Created")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -136,21 +147,11 @@ class BluetoothScanningService : LifecycleService() {
             Timber.i("Permissions not granted.")
             return
         }
-        Timber.i("startBleScan")
-        Timber.i("isScanning: $isScanning")
-        Timber.i("isServiceRunning: $isServiceRunning")
 
         if (!isScanning && isServiceRunning) {
             handler.postDelayed({
                 isScanning = false
                 bleScanner.stopScan(scanCallback)
-                Timber.i("scanResults: $scanResults")
-                Timber.i("scanResultsSize: ${scanResults.size}")
-                Toast.makeText(
-                    applicationContext,
-                    "scanResultsSize: ${scanResults.size}",
-                    Toast.LENGTH_SHORT
-                ).show()
                 handler.postDelayed({
                     startBleScan()
                 }, INTERVAL_BLE_SCAN )
@@ -158,7 +159,6 @@ class BluetoothScanningService : LifecycleService() {
             isScanning = true
             bleScanner.startScan(scanCallback)
         } else {
-            Timber.i("stop handler")
             isScanning = false
             bleScanner.stopScan(scanCallback)
         }
@@ -170,20 +170,30 @@ class BluetoothScanningService : LifecycleService() {
 
         override fun onScanResult(callbackType: Int, result: ScanResult) {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                BluetoothAPILogger().logResults(result)
+            lastKnownLocation?.let {
+
+                val mac = result.device.address
+                val timestampInMilliSeconds = Calendar.getInstance().timeInMillis
+                val lat = it.latitude
+                val lng = it.longitude
+                val deviceType = DeviceTypeManager.identifyDeviceType(result).type
+
+                val bleDevice = BLEDevice(
+                    mac,
+                    timestampInMilliSeconds,
+                    lat,
+                    lng,
+                    deviceType)
+
+                insertBLEDevice(bleDevice)
             }
 
-            // this might needs to be changed as the device.address might change due to
-            // MAC randomization
-            // check if the current found result is already in the entire scanResult list
-            val indexQuery = scanResults.indexOfFirst { it.device.address == result.device.address }
-            // element not found returns -1
-            if (indexQuery != -1) { // A scan result already exists with the same address
-                scanResults[indexQuery] = result
-            } else { // found new device
-                scanResults.add(result)
-            }
+        }
+    }
+
+    fun  insertBLEDevice(bleDevice: BLEDevice) {
+        lifecycleScope.launch {
+            mainRepository.insertBLEDevice(bleDevice)
         }
     }
 }
