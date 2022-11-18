@@ -19,9 +19,9 @@ object Constants {
     const val ACTION_SHOW_NOTIFICATIONS_FRAGMENT = "ACTION_SHOW_NOTIFICATIONS_FRAGMENT"
 
     // Notifications for tracking service
-    const val CHANNEL_ID_TRACKING_PROTECTION = "tracking_protection_channel"
-    const val NOTIFICATION_CHANNEL_TRACKING = "tracking"
-    const val NOTIFICATION_ID_TRACKING = 2
+    const val CHANNEL_ID_LOCATION_TRACKING = "location_tracking_channel"
+    const val NOTIFICATION_CHANNEL_LOCATION_TRACKING = "location_tracking"
+    const val NOTIFICATION_ID_LOCATION_TRACKING = 2
     const val ACTION_SHOW_SETTINGS_FRAGMENT = "ACTION_SHOW_SETTINGS_FRAGMENT"
 
     // Tracking Service
@@ -36,7 +36,7 @@ object Constants {
     const val ACTION_START_BLUETOOTH_SERVICE = "ACTION_START_BLUETOOTH_SERVICE"
     const val ACTION_STOP_BLUETOOTH_SERVICE = "ACTION_STOP_BLUETOOTH_SERVICE"
     const val CHANNEL_ID_BLUETOOTH_SCANNING = "bluetooth_scanning_channel"
-    const val NOTIFICATION_CHANNEL_BLUETOOTH = "bluetooth"
-    const val NOTIFICATION_ID_BLUETOOTH = 3
+    const val NOTIFICATION_CHANNEL_BLUETOOTH_SCANNING = "bluetooth_scanning"
+    const val NOTIFICATION_ID_BLUETOOTH_SCANNING = 3
     const val SCAN_PERIOD: Long = 1000
 }

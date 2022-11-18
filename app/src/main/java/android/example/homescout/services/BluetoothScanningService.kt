@@ -21,7 +21,7 @@ import android.example.homescout.utils.Constants.ACTION_START_BLUETOOTH_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_BLUETOOTH_SERVICE
 import android.example.homescout.utils.Constants.CHANNEL_ID_BLUETOOTH_SCANNING
 import android.example.homescout.utils.Constants.INTERVAL_BLE_SCAN
-import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_BLUETOOTH
+import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_BLUETOOTH_SCANNING
 import android.example.homescout.utils.Constants.SCAN_PERIOD
 import android.os.Handler
 import android.os.Looper
@@ -63,7 +63,7 @@ class BluetoothScanningService : LifecycleService() {
 
 
     override fun onCreate() {
-        TrackingService.lastKnownLocation.observe(this) {
+        LocationTrackingService.lastKnownLocation.observe(this) {
             lastKnownLocation = it
         }
         super.onCreate()
@@ -116,7 +116,7 @@ class BluetoothScanningService : LifecycleService() {
             .setContentText("Bluetooth service is running.")
             .setContentIntent(getMainActivityPendingIntent())
 
-        startForeground(Constants.NOTIFICATION_ID_BLUETOOTH, notificationBuilder.build())
+        startForeground(Constants.NOTIFICATION_ID_BLUETOOTH_SCANNING, notificationBuilder.build())
     }
 
     private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
@@ -131,7 +131,7 @@ class BluetoothScanningService : LifecycleService() {
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         val channel = NotificationChannel(
             CHANNEL_ID_BLUETOOTH_SCANNING,
-            NOTIFICATION_CHANNEL_BLUETOOTH,
+            NOTIFICATION_CHANNEL_BLUETOOTH_SCANNING,
             NotificationManager.IMPORTANCE_LOW
         )
         notificationManager.createNotificationChannel(channel)

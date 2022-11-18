@@ -16,10 +16,10 @@ import android.example.homescout.utils.Constants.ACTION_START_BLUETOOTH_SERVICE
 import android.example.homescout.utils.Constants.ACTION_START_TRACKING_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_BLUETOOTH_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_TRACKING_SERVICE
-import android.example.homescout.utils.Constants.CHANNEL_ID_TRACKING_PROTECTION
+import android.example.homescout.utils.Constants.CHANNEL_ID_LOCATION_TRACKING
 import android.example.homescout.utils.Constants.LOCATION_UPDATE_INTERVAL
-import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_TRACKING
-import android.example.homescout.utils.Constants.NOTIFICATION_ID_TRACKING
+import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_LOCATION_TRACKING
+import android.example.homescout.utils.Constants.NOTIFICATION_ID_LOCATION_TRACKING
 import android.example.homescout.utils.Constants.SIZE_OF_APPROX_2_MINUTES
 import android.example.homescout.utils.Constants.STATIONARY_MOVING_DISTANCE
 import android.example.homescout.utils.RingBuffer
@@ -42,7 +42,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TrackingService : LifecycleService() {
+class LocationTrackingService : LifecycleService() {
 
     var isServiceRunning = false
     var isBluetoothServiceRunning = false
@@ -107,7 +107,7 @@ class TrackingService : LifecycleService() {
 
         createNotificationChannel(notificationManager)
 
-        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID_TRACKING_PROTECTION)
+        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID_LOCATION_TRACKING)
             .setAutoCancel(false)
             .setOngoing(true)
             .setSmallIcon(R.drawable.ic_protect_48px)
@@ -115,7 +115,7 @@ class TrackingService : LifecycleService() {
             .setContentText("Tracking service is running.")
             .setContentIntent(getMainActivityPendingIntent())
 
-        startForeground(NOTIFICATION_ID_TRACKING, notificationBuilder.build())
+        startForeground(NOTIFICATION_ID_LOCATION_TRACKING, notificationBuilder.build())
     }
 
     private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
@@ -129,8 +129,8 @@ class TrackingService : LifecycleService() {
 
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         val channel = NotificationChannel(
-            CHANNEL_ID_TRACKING_PROTECTION,
-            NOTIFICATION_CHANNEL_TRACKING,
+            CHANNEL_ID_LOCATION_TRACKING,
+            NOTIFICATION_CHANNEL_LOCATION_TRACKING,
             IMPORTANCE_LOW
         )
         notificationManager.createNotificationChannel(channel)
@@ -165,7 +165,7 @@ class TrackingService : LifecycleService() {
                     "User moves -> start ble service",
                     Toast.LENGTH_SHORT
                 ).show()
-                startBluetoothTrackingService()
+                startBluetoothScanningService()
                 return
             }
 
@@ -242,7 +242,7 @@ class TrackingService : LifecycleService() {
         }
 
 
-    private fun startBluetoothTrackingService() {
+    private fun startBluetoothScanningService() {
         sendCommandToService(ACTION_START_BLUETOOTH_SERVICE)
         isBluetoothServiceRunning = true
     }

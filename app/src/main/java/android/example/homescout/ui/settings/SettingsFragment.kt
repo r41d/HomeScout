@@ -7,7 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.example.homescout.R
 import android.example.homescout.databinding.FragmentSettingsBinding
-import android.example.homescout.services.TrackingService
+import android.example.homescout.services.LocationTrackingService
 import android.example.homescout.ui.intro.PermissionAppIntro
 import android.example.homescout.utils.Constants.ACTION_START_TRACKING_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_TRACKING_SERVICE
@@ -265,7 +265,7 @@ class SettingsFragment : Fragment() {
 
     // PRIVATE FUNCTIONS
     private fun sendCommandToService(action: String) =
-        Intent(requireContext(), TrackingService::class.java).also {
+        Intent(requireContext(), LocationTrackingService::class.java).also {
             it.action = action
             // does not actually start service, but delivers the intent to the service
             requireContext().startService(it)
