@@ -29,25 +29,44 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
-import com.google.android.gms.location.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.LatLng
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class TrackingService : LifecycleService() {
 
     var isServiceRunning = false
     var isBluetoothServiceRunning = false
 
+    @Inject
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private val userPositionsHistoryBuffer = RingBuffer<LatLng>(SIZE_OF_APPROX_2_MINUTES)
 
+    companion object {
+        private val _lastKnownLocation = MutableLiveData<LatLng?>()
+        val lastKnownLocation: LiveData<LatLng?>
+            get() = _lastKnownLocation
+    }
+
     // LIFECYCLE FUNCTIONS
     override fun onCreate() {
+        _lastKnownLocation.value = null
         super.onCreate()
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    override fun onDestroy() {
+        _lastKnownLocation.value = null
+        super.onDestroy()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -121,7 +140,9 @@ class TrackingService : LifecycleService() {
     // FUNCTIONS FOR LOCATION TRACKING
     private fun addPosition(currentLocation: Location?) {
         currentLocation?.let {
-            userPositionsHistoryBuffer.put(LatLng(currentLocation.latitude, currentLocation.longitude))
+            val position = LatLng(currentLocation.latitude, currentLocation.longitude)
+            userPositionsHistoryBuffer.put(position)
+            _lastKnownLocation.value = position
         }
     }
 
