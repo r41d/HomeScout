@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.example.homescout.R
+import android.example.homescout.database.BLEDevice
 import android.example.homescout.repositories.MainRepository
 import android.example.homescout.repositories.TrackingPreferencesRepository
 import android.example.homescout.ui.main.MainActivity
@@ -21,8 +22,11 @@ import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -41,6 +45,14 @@ class TrackerClassificationService : LifecycleService() {
     @Inject
     lateinit var trackingPreferencesRepository: TrackingPreferencesRepository
 
+    @Inject
+    lateinit var mainRepository: MainRepository
+
+    private var bleDevicesSortedByTime: List<BLEDevice>? = null
+
+    private var timeStamp = 50000000000000
+
+
 
     override fun onCreate() {
         super.onCreate()
@@ -49,6 +61,11 @@ class TrackerClassificationService : LifecycleService() {
         trackingPreferencesRepository.time.asLiveData().observe(this) { time = it }
         trackingPreferencesRepository.occurrences.asLiveData().observe(this) {
             occurrences = it
+        }
+
+//        bleDevicesSortedByTime = mainRepository.getAllBLEDevicesSortedByDate()
+        mainRepository.getAllBLEDevicesSortedByDate().observe(this) {
+            bleDevicesSortedByTime = it
         }
 
     }
@@ -122,15 +139,38 @@ class TrackerClassificationService : LifecycleService() {
 
         if (isServiceRunning) {
 
+            deleteBLEDevicesOlderThanOneHour()
+
+            bleDevicesSortedByTime?.let{
+                Timber.i("time: $time")
+                Timber.i("distance: $distance")
+                Timber.i("occurrences: $occurrences")
+                Timber.i("sortedBleDevices: ${bleDevicesSortedByTime!!.size}")
+            }
+
+            val testBLEDevice = BLEDevice("test", timeStamp, 0.0 ,0.0, "Test")
+            timeStamp++
+
+            insertBLEDevice(testBLEDevice)
 
 
-            Timber.i("time: $time")
-            Timber.i("distance: $distance")
-            Timber.i("occurrences: $occurrences")
 
             handler.postDelayed({
                 startTrackerClassification()
             }, INTERVAL_TRACKER_CLASSIFICATION)
         }
     }
+
+    fun deleteBLEDevicesOlderThanOneHour() {
+        lifecycleScope.launch{
+            mainRepository.deleteBLEDevicesOlderThanOneHour()
+        }
+    }
+
+    fun  insertBLEDevice(bleDevice: BLEDevice) {
+        lifecycleScope.launch {
+            mainRepository.insertBLEDevice(bleDevice)
+        }
+    }
+
 }

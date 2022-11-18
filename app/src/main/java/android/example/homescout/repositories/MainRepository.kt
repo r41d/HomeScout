@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 
 class MainRepository @Inject constructor(
-    val bleDeviceDao: BLEDeviceDao,
-    val userPositionDao: UserPositionDao
+    private val bleDeviceDao: BLEDeviceDao,
+    private val userPositionDao: UserPositionDao
 ) {
 
     suspend fun insertBLEDevice(bleDevice: BLEDevice) {
@@ -20,8 +20,14 @@ class MainRepository @Inject constructor(
             bleDeviceDao.insertBLEDevice(bleDevice)
         }
     }
+
     suspend fun deleteBLEDevice(bleDevice: BLEDevice) = bleDeviceDao.deleteBLEDevice(bleDevice)
-    suspend fun deleteBLEDevicesOlderThanOneWeek() = bleDeviceDao.deleteBLEDevicesOlderThanOneWeek()
+
+    suspend fun deleteBLEDevicesOlderThanOneHour() {
+        withContext(Dispatchers.IO + NonCancellable) {
+            bleDeviceDao.deleteBLEDevicesOlderThanOneHour()
+        }
+    }
     fun getAllBLEDevicesSortedByDate() = bleDeviceDao.getAllBLEDevicesSortedByDate()
 
     suspend fun insertUserPosition(userPosition: UserPosition) = userPositionDao.insertUserPosition(userPosition)
