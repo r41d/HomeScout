@@ -191,7 +191,7 @@ class SettingsFragment : Fragment() {
 
     private fun setupSliderOccurences() {
         binding.sliderOccurrences.setLabelFormatter { value: Float ->
-            if (value == 1.0f) "%.0f time".format(value) else "%.0f times".format(value)
+            "%.0f times".format(value)
         }
 
 
