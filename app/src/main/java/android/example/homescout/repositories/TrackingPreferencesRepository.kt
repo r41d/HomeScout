@@ -15,7 +15,7 @@ class TrackingPreferencesRepository @Inject constructor(private val dataStore: D
     private object PreferenceKeys {
         val IS_TRACKING_ENABLED = booleanPreferencesKey("is_tracking_enabled")
         val DISTANCE = floatPreferencesKey("distance")
-        val TIME = floatPreferencesKey("time")
+        val TIME_IN_MIN = floatPreferencesKey("time_in_min")
         val OCCURRENCES = floatPreferencesKey("occurrences")
     }
 
@@ -29,8 +29,8 @@ class TrackingPreferencesRepository @Inject constructor(private val dataStore: D
         preferences[PreferenceKeys.DISTANCE] ?: 250.0f
     }
 
-    val time = dataStore.data.map { preferences ->
-        preferences[PreferenceKeys.TIME] ?: 35.0f
+    val timeInMin = dataStore.data.map { preferences ->
+        preferences[PreferenceKeys.TIME_IN_MIN] ?: 35.0f
     }
 
     val occurrences = dataStore.data.map { preferences ->
@@ -49,9 +49,9 @@ class TrackingPreferencesRepository @Inject constructor(private val dataStore: D
         }
     }
 
-    suspend fun updateTime(time: Float) {
+    suspend fun updateTimeInMin(timeInMin: Float) {
         dataStore.edit { preferences ->
-            preferences[PreferenceKeys.TIME] = time
+            preferences[PreferenceKeys.TIME_IN_MIN] = timeInMin
         }
     }
 

@@ -19,9 +19,9 @@ class SettingsViewModel @Inject constructor(
     val distance: LiveData<Float>
         get() = trackingPreferencesRepository.distance.asLiveData()
 
-    private val _time = MutableLiveData<Float>()
-    val time: LiveData<Float>
-        get() = trackingPreferencesRepository.time.asLiveData()
+    private val _timeInMin = MutableLiveData<Float>()
+    val timeInMin: LiveData<Float>
+        get() = trackingPreferencesRepository.timeInMin.asLiveData()
 
     private val _occurrences = MutableLiveData<Float>()
     val occurrences: LiveData<Float>
@@ -40,9 +40,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun updateTime(value: Float) {
+    fun updateTimeInMin(value: Float) {
         viewModelScope.launch {
-            trackingPreferencesRepository.updateTime(value)
+            trackingPreferencesRepository.updateTimeInMin(value)
         }
     }
 

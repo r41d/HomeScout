@@ -124,31 +124,31 @@
 
 
             <TextView
-                android:id="@+id/text_slider_time"
+                android:id="@+id/text_slider_time_in_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_medium"
-                android:text="@string/description_slider_time"
+                android:text="@string/description_slider_time_in_min"
                 android:fontFamily="@font/roboto"
                 android:textSize="18sp"
                 app:layout_constraintTop_toBottomOf="@id/slider_distance"
                 app:layout_constraintStart_toStartOf="@id/slider_distance" />
 
             <ImageView
-                android:id="@+id/info_slider_time"
+                android:id="@+id/info_slider_time_in_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_small"
                 android:src="@drawable/ic_info_20px"
-                app:layout_constraintStart_toEndOf="@id/text_slider_time"
-                app:layout_constraintTop_toTopOf="@id/text_slider_time"
-                app:layout_constraintBottom_toBottomOf="@id/text_slider_time"
+                app:layout_constraintStart_toEndOf="@id/text_slider_time_in_min"
+                app:layout_constraintTop_toTopOf="@id/text_slider_time_in_min"
+                app:layout_constraintBottom_toBottomOf="@id/text_slider_time_in_min"
                 android:clickable="@{settingsViewModel.isSwitchEnabled}"
-                android:contentDescription="@string/text_dialog_slider_time" />
+                android:contentDescription="@string/text_dialog_slider_time_in_min" />
 
 
             <com.google.android.material.slider.Slider
-                android:id="@+id/slider_time"
+                android:id="@+id/slider_time_in_min"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
@@ -157,7 +157,7 @@
                 android:valueTo="60.0"
                 android:stepSize="5.0"
                 android:enabled="@{settingsViewModel.isSwitchEnabled}"
-                app:layout_constraintTop_toBottomOf="@id/text_slider_time" />
+                app:layout_constraintTop_toBottomOf="@id/text_slider_time_in_min" />
 
             <TextView
                 android:id="@+id/text_slider_occurrences"
@@ -167,8 +167,8 @@
                 android:text="@string/description_slider_occurrences"
                 android:fontFamily="@font/roboto"
                 android:textSize="18sp"
-                app:layout_constraintTop_toBottomOf="@id/slider_time"
-                app:layout_constraintStart_toStartOf="@id/slider_time" />
+                app:layout_constraintTop_toBottomOf="@id/slider_time_in_min"
+                app:layout_constraintStart_toStartOf="@id/slider_time_in_min" />
 
             <ImageView
                 android:id="@+id/info_slider_occurrences"

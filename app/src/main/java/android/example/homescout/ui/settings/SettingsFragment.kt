@@ -53,7 +53,7 @@ class SettingsFragment : Fragment() {
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
-                settingsViewModel.updateTime(slider.value)
+                settingsViewModel.updateTimeInMin(slider.value)
             }
         }
 
@@ -89,7 +89,7 @@ class SettingsFragment : Fragment() {
         setupViewModelAndBinding(inflater, container)
         setupSwitchTrackingProtection()
         setupSliderDistance()
-        setupSliderTime()
+        setupSliderTimeInMin()
         setupSliderOccurences()
         setupColorChangeForInfoButtons()
         observeTrackingPreferences()
@@ -173,15 +173,15 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun setupSliderTime() {
-        binding.sliderTime.setLabelFormatter { value: Float ->
+    private fun setupSliderTimeInMin() {
+        binding.sliderTimeInMin.setLabelFormatter { value: Float ->
             "%.0f min".format(value)
         }
 
-        binding.infoSliderTime.setOnClickListener {
+        binding.infoSliderTimeInMin.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.description_slider_time))
-                .setMessage(getString(R.string.text_dialog_slider_time))
+                .setTitle(getString(R.string.description_slider_time_in_min))
+                .setMessage(getString(R.string.text_dialog_slider_time_in_min))
                 .setPositiveButton("Ok") { dialog, which ->
                     // No Respond to positive button press needed
                 }
@@ -217,7 +217,7 @@ class SettingsFragment : Fragment() {
                         R.color.purple_500
                     )
                 )
-                binding.infoSliderTime.setColorFilter(
+                binding.infoSliderTimeInMin.setColorFilter(
                     getColor(
                         requireContext(),
                         R.color.purple_500
@@ -231,7 +231,7 @@ class SettingsFragment : Fragment() {
                 )
             } else {
                 binding.infoSliderDistance.setColorFilter(getColor(requireContext(), R.color.grey))
-                binding.infoSliderTime.setColorFilter(getColor(requireContext(), R.color.grey))
+                binding.infoSliderTimeInMin.setColorFilter(getColor(requireContext(), R.color.grey))
                 binding.infoSliderOccurrences.setColorFilter(
                     getColor(
                         requireContext(),
@@ -248,8 +248,8 @@ class SettingsFragment : Fragment() {
             binding.sliderDistance.value = it
         }
 
-        settingsViewModel.time.observe(viewLifecycleOwner) {
-            binding.sliderTime.value = it
+        settingsViewModel.timeInMin.observe(viewLifecycleOwner) {
+            binding.sliderTimeInMin.value = it
         }
 
         settingsViewModel.occurrences.observe(viewLifecycleOwner) {
@@ -259,7 +259,7 @@ class SettingsFragment : Fragment() {
 
     private fun addOnSliderTouchListeners() {
         binding.sliderDistance.addOnSliderTouchListener(touchListenerDistance)
-        binding.sliderTime.addOnSliderTouchListener(touchListenerTime)
+        binding.sliderTimeInMin.addOnSliderTouchListener(touchListenerTime)
         binding.sliderOccurrences.addOnSliderTouchListener(touchListenerOccurrences)
     }
 
