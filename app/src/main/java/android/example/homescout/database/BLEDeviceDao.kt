@@ -10,13 +10,13 @@ interface BLEDeviceDao {
     suspend fun insertBLEDevice(bleDevice: BLEDevice)
 
     @Query("SELECT * FROM ble_device_table ORDER BY timestampInMilliSeconds DESC")
-    fun getAllBLEDevicesSortedByDate() : LiveData<List<BLEDevice>>
+    fun getAllBLEDevicesSortedByTimestamp() : LiveData<List<BLEDevice>>
 
     @Delete
     suspend fun deleteBLEDevice(bleDevice: BLEDevice)
 
-    @Query("DELETE FROM ble_device_table WHERE timestampInMilliSeconds <= (strftime('%s','now', '-1 hour') * 1000)")
-    suspend fun deleteBLEDevicesOlderThanOneHour()
+    @Query("DELETE FROM ble_device_table WHERE timestampInMilliSeconds <= (strftime('%s','now', '-2 hour') * 1000)")
+    suspend fun deleteBLEDevicesOlderThanTwoHours()
 
 
 }

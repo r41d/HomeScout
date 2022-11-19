@@ -23,12 +23,12 @@ class MainRepository @Inject constructor(
 
     suspend fun deleteBLEDevice(bleDevice: BLEDevice) = bleDeviceDao.deleteBLEDevice(bleDevice)
 
-    suspend fun deleteBLEDevicesOlderThanOneHour() {
+    suspend fun deleteBLEDevicesOlderThanTwoHours() {
         withContext(Dispatchers.IO + NonCancellable) {
-            bleDeviceDao.deleteBLEDevicesOlderThanOneHour()
+            bleDeviceDao.deleteBLEDevicesOlderThanTwoHours()
         }
     }
-    fun getAllBLEDevicesSortedByDate() = bleDeviceDao.getAllBLEDevicesSortedByDate()
+    fun getAllBLEDevicesSortedByTimestamp() = bleDeviceDao.getAllBLEDevicesSortedByTimestamp()
 
     suspend fun insertUserPosition(userPosition: UserPosition) = userPositionDao.insertUserPosition(userPosition)
     suspend fun deleteUserPosition(userPosition: UserPosition) = userPositionDao.deleteUserPosition(userPosition)
