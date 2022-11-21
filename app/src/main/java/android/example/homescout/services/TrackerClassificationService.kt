@@ -57,7 +57,7 @@ class TrackerClassificationService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
 
-        clear()
+        clearBleDeviceTable()
         observeTrackingPreferences()
         createBleDeviceHashMapWithMacAsKeyOrderedDescByTime()
 
@@ -250,9 +250,9 @@ class TrackerClassificationService : LifecycleService() {
         }
     }
 
-    private fun clear() {
+    private fun clearBleDeviceTable() {
         lifecycleScope.launch{
-            mainRepository.clear()
+            mainRepository.clearBleDeviceTable()
         }
     }
 

@@ -19,7 +19,7 @@ interface BLEDeviceDao {
     suspend fun deleteBLEDevicesOlderThanTwoHours()
 
     @Query("DELETE FROM ble_device_table")
-    suspend fun clear()
+    suspend fun clearTable()
 
 
 }

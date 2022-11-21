@@ -53,5 +53,5 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideUserPositionDao(db: HomeScoutDatabase) = db.getUserPositionDao()
+    fun provideMaliciousTrackerDao(db: HomeScoutDatabase) = db.getMaliciousTrackerDao()
 }
