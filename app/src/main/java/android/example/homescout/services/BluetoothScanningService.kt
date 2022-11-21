@@ -43,7 +43,6 @@ class BluetoothScanningService : LifecycleService() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val scanResults = mutableListOf<ScanResult>()
     private var isServiceRunning = false
     private var isScanning = false
 
@@ -162,7 +161,6 @@ class BluetoothScanningService : LifecycleService() {
             isScanning = false
             bleScanner.stopScan(scanCallback)
         }
-
     }
 
     private val scanCallback = object : ScanCallback() {
