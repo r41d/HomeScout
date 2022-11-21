@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.example.homescout.R
 import android.example.homescout.database.BLEDevice
+import android.example.homescout.database.MaliciousTracker
 import android.example.homescout.repositories.MainRepository
 import android.example.homescout.repositories.TrackingPreferencesRepository
 import android.example.homescout.ui.main.MainActivity
@@ -166,6 +167,9 @@ class TrackerClassificationService : LifecycleService() {
 
         if (isServiceRunning) {
 
+            val mockMaliciousTrakcer = MaliciousTracker("mock", 0L, "mockTracker")
+            insertMaliciousTracker(mockMaliciousTrakcer)
+
             hashMapBleDevicesSortedByTime.let{ hashMapBleDevicesSortedByTime ->
 
                 for (key in hashMapBleDevicesSortedByTime.keys) {
@@ -256,4 +260,9 @@ class TrackerClassificationService : LifecycleService() {
         }
     }
 
+    private fun insertMaliciousTracker( maliciousTracker: MaliciousTracker) {
+        lifecycleScope.launch {
+            mainRepository.insertMaliciousTracker(maliciousTracker)
+        }
+    }
 }
