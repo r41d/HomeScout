@@ -12,6 +12,7 @@ import android.example.homescout.R
 import android.example.homescout.databinding.FragmentScanBinding
 import android.example.homescout.ui.intro.PermissionAppIntro
 import android.example.homescout.utils.BluetoothAPILogger
+import android.example.homescout.utils.Constants.SCAN_PERIOD
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -229,7 +230,7 @@ class ScanFragment : Fragment() {
         handler.postDelayed({
             isScanning = false
             bleScanner.stopScan(scanCallback)
-        }, 1000)
+        }, SCAN_PERIOD)
 
         bleScanner.startScan(null, scanSettings, scanCallback)
         isScanning = true
