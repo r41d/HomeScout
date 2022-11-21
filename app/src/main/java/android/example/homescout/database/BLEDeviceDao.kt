@@ -18,5 +18,8 @@ interface BLEDeviceDao {
     @Query("DELETE FROM ble_device_table WHERE timestampInMilliSeconds <= (strftime('%s','now', '-2 hour') * 1000)")
     suspend fun deleteBLEDevicesOlderThanTwoHours()
 
+    @Query("DELETE FROM ble_device_table")
+    suspend fun clear()
+
 
 }

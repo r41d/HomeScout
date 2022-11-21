@@ -29,6 +29,11 @@ class MainRepository @Inject constructor(
         }
     }
     fun getAllBLEDevicesSortedByTimestamp() = bleDeviceDao.getAllBLEDevicesSortedByTimestamp()
+    suspend fun clear() {
+        withContext(Dispatchers.IO + NonCancellable){
+            bleDeviceDao.clear()
+        }
+    }
 
     suspend fun insertUserPosition(userPosition: UserPosition) = userPositionDao.insertUserPosition(userPosition)
     suspend fun deleteUserPosition(userPosition: UserPosition) = userPositionDao.deleteUserPosition(userPosition)
