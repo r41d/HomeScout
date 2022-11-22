@@ -14,6 +14,7 @@ import android.example.homescout.repositories.MainRepository
 import android.example.homescout.repositories.TrackingPreferencesRepository
 import android.example.homescout.ui.main.MainActivity
 import android.example.homescout.utils.Constants
+import android.example.homescout.utils.Constants.ACTION_SHOW_NOTIFICATIONS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_START_TRACKER_CLASSIFICATION_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE
@@ -24,7 +25,6 @@ import android.example.homescout.utils.Constants.NOTIFICATION_ID_TRACKER_CLASSIF
 import android.location.Location
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.asLiveData
@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class TrackerClassificationService : LifecycleService() {
@@ -60,7 +59,6 @@ class TrackerClassificationService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
 
-        clearBleDeviceTable()
         observeTrackingPreferences()
         createBleDeviceHashMapWithMacAsKeyOrderedDescByTime()
 
@@ -162,17 +160,12 @@ class TrackerClassificationService : LifecycleService() {
         Intent(this, MainActivity::class.java).also {
             it.action = ACTION_SHOW_SETTINGS_FRAGMENT
         },
-        PendingIntent.FLAG_IMMUTABLE
+        FLAG_IMMUTABLE
     )
 
     private fun startTrackerClassification() {
 
         if (isServiceRunning) {
-
-            val mockMaliciousTrakcer = MaliciousTracker("mock", 0L, "mockTracker")
-            insertMaliciousTracker(mockMaliciousTrakcer)
-
-            sendFoundTrackerNotification()
 
             hashMapBleDevicesSortedByTime.let{ hashMapBleDevicesSortedByTime ->
 
@@ -188,9 +181,9 @@ class TrackerClassificationService : LifecycleService() {
                     // check if the tracker follows according to time defined by user
                     val youngestScanTime = scansOfThisDevice.first().timestampInMilliSeconds
                     val oldestScanTime = scansOfThisDevice.last().timestampInMilliSeconds
-                    val diffBetweenFirstAndLastScan = youngestScanTime - oldestScanTime
+                    val diffBetweenYoungestAndOldestScan = youngestScanTime - oldestScanTime
                     val timeThresholdInMillis = timeinMin!! * 60000
-//                    if (diffBetweenFirstAndLastScan < timeThresholdInMillis) { continue }
+                    if (diffBetweenYoungestAndOldestScan < timeThresholdInMillis) { continue }
 
 
                     // check if the tracker follows according to distance defined by user
@@ -214,31 +207,18 @@ class TrackerClassificationService : LifecycleService() {
 
                     if (distanceFollowed < distance!!) { continue }
 
+
                     // FOUND A MALICIOUS TRACKER ACCORDING TO USER DEFINED PARAMETERS
+                    val tracker = scansOfThisDevice.first()
 
-                    val macAddress = key
-                    val type = scansOfThisDevice.first().type
-                    Toast.makeText(
-                        applicationContext,
-                        "Type: $type, Mac: $macAddress",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val maliciousTracker = MaliciousTracker(
+                        mac = tracker.macAddress!!,
+                        timestampInMilliSeconds = tracker.timestampInMilliSeconds,
+                        type = tracker.type)
 
+                    insertMaliciousTrackerIfNotExistsAndNotify(maliciousTracker)
                 }
-
             }
-
-
-
-//            val testBLEDevice = BLEDevice("testLocation", timeStamp, 47.39214386976374 ,8.525952486036404, "Test")
-//            timeStamp++
-//            val testBLEDevice2 = BLEDevice("testLocation", timeStamp, 47.39207757469091, 8.526133440055352, "Test")
-//            timeStamp++
-//
-//            insertBLEDevice(testBLEDevice)
-//            insertBLEDevice(testBLEDevice2)
-
-
 
             handler.postDelayed({
                 startTrackerClassification()
@@ -280,7 +260,7 @@ class TrackerClassificationService : LifecycleService() {
         this,
         0,
         Intent(this, MainActivity::class.java).also {
-            it.action = Constants.ACTION_SHOW_NOTIFICATIONS_FRAGMENT
+            it.action = ACTION_SHOW_NOTIFICATIONS_FRAGMENT
         },
         FLAG_IMMUTABLE
     )
@@ -291,21 +271,13 @@ class TrackerClassificationService : LifecycleService() {
         }
     }
 
-    private fun  insertBLEDevice(bleDevice: BLEDevice) {
+    private fun insertMaliciousTrackerIfNotExistsAndNotify(maliciousTracker: MaliciousTracker) {
         lifecycleScope.launch {
-            mainRepository.insertBLEDevice(bleDevice)
-        }
-    }
-
-    private fun clearBleDeviceTable() {
-        lifecycleScope.launch{
-            mainRepository.clearBleDeviceTable()
-        }
-    }
-
-    private fun insertMaliciousTracker( maliciousTracker: MaliciousTracker) {
-        lifecycleScope.launch {
-            mainRepository.insertMaliciousTracker(maliciousTracker)
+            val checkTracker = mainRepository.getMaliciousTrackerByMac(maliciousTracker.mac)
+            if (checkTracker == null) {
+                mainRepository.insertMaliciousTracker(maliciousTracker)
+                sendFoundTrackerNotification()
+            }
         }
     }
 }
