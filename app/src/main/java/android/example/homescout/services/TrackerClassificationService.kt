@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.example.homescout.R
@@ -12,6 +13,7 @@ import android.example.homescout.database.MaliciousTracker
 import android.example.homescout.repositories.MainRepository
 import android.example.homescout.repositories.TrackingPreferencesRepository
 import android.example.homescout.ui.main.MainActivity
+import android.example.homescout.utils.Constants
 import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_START_TRACKER_CLASSIFICATION_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE
@@ -30,7 +32,9 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class TrackerClassificationService : LifecycleService() {
@@ -51,8 +55,6 @@ class TrackerClassificationService : LifecycleService() {
     lateinit var mainRepository: MainRepository
 
     private var hashMapBleDevicesSortedByTime: HashMap<String, MutableList<BLEDevice>?> = HashMap()
-
-    private var timeStamp = 50000000000000
 
     // LIFECYCLE FUNCTIONS
     override fun onCreate() {
@@ -170,6 +172,8 @@ class TrackerClassificationService : LifecycleService() {
             val mockMaliciousTrakcer = MaliciousTracker("mock", 0L, "mockTracker")
             insertMaliciousTracker(mockMaliciousTrakcer)
 
+            sendFoundTrackerNotification()
+
             hashMapBleDevicesSortedByTime.let{ hashMapBleDevicesSortedByTime ->
 
                 for (key in hashMapBleDevicesSortedByTime.keys) {
@@ -241,6 +245,45 @@ class TrackerClassificationService : LifecycleService() {
             }, INTERVAL_TRACKER_CLASSIFICATION)
         }
     }
+
+    private fun sendFoundTrackerNotification() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE)
+                as NotificationManager
+
+        createFoundTrackerNotificationChannel(notificationManager)
+
+        val notificationBuilder = NotificationCompat.Builder(this,
+            Constants.CHANNEL_ID_FOUND_DEVICE
+        )
+            .setAutoCancel(true)
+            .setSmallIcon(R.drawable.ic_notifications_24px)
+            .setContentTitle("Home Scout")
+            .setContentText("Found a BLE Tracker")
+            .setContentIntent(getMainActivityPendingIntentFoundTracker())
+
+        notificationManager.notify(Constants.NOTIFICATION_ID_FOUND_DEVICE,notificationBuilder.build() )
+
+    }
+
+    private fun createFoundTrackerNotificationChannel(notificationManager: NotificationManager) {
+
+        val channel = NotificationChannel(
+            Constants.CHANNEL_ID_FOUND_DEVICE,
+            Constants.NOTIFICATION_CHANNEL_FOUND_DEVICE,
+            NotificationManager.IMPORTANCE_HIGH
+        )
+        notificationManager.createNotificationChannel(channel)
+
+    }
+
+    private fun getMainActivityPendingIntentFoundTracker() = PendingIntent.getActivity(
+        this,
+        0,
+        Intent(this, MainActivity::class.java).also {
+            it.action = Constants.ACTION_SHOW_NOTIFICATIONS_FRAGMENT
+        },
+        FLAG_IMMUTABLE
+    )
 
     private fun deleteBLEDevicesOlderThanTwoHours() {
         lifecycleScope.launch{

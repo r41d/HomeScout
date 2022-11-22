@@ -19,23 +19,39 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+
+
     // PROPERTIES
+    private var hasNavigatedToFragment = false
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navHostFragment : NavHostFragment
+    private lateinit var navController: NavController
+
 
     // LIFECYCLE FUNCTIONS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
+        navigateToFragmentIfNeeded(intent)
 
+        if (!hasNavigatedToFragment) {
+            setupBottomNavigation()
+        }
+
+
+    }
+
+    private fun setupBottomNavigation() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val navView: BottomNavigationView = binding.navView
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navController: NavController = navHostFragment.navController
+        navHostFragment = supportFragmentManager.findFragmentById(
+            R.id.nav_host_fragment_activity_main
+        ) as NavHostFragment
+        navController = navHostFragment.navController
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -47,9 +63,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        navigateToFragmentIfNeeded(intent)
-
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -60,16 +73,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToFragmentIfNeeded(intent: Intent?) {
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navController: NavController = navHostFragment.navController
+//        val navHostFragment =
+//            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+//        val navController: NavController = navHostFragment.navController
+
+
 
         when (intent?.action) {
             ACTION_SHOW_SETTINGS_FRAGMENT -> {
+                hasNavigatedToFragment = true
+                setupBottomNavigation()
                 navController.navigate(R.id.action_global_settings_fragment)
             }
 
             ACTION_SHOW_NOTIFICATIONS_FRAGMENT -> {
+                hasNavigatedToFragment = true
+                setupBottomNavigation()
                 navController.navigate(R.id.action_global_notifications_fragment)
             }
 
