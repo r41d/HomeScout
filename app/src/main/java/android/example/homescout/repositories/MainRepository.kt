@@ -46,6 +46,12 @@ class MainRepository @Inject constructor(
         }
     }
 
+    suspend fun getMaliciousTrackerByMac(macAddress: String): MaliciousTracker? {
+        return withContext(Dispatchers.IO + NonCancellable) {
+            maliciousTrackerDao.getMaliciousTrackerByMac(macAddress)
+        }
+    }
+
     suspend fun deleteMaliciousTracker(maliciousTracker: MaliciousTracker) {
         withContext(Dispatchers.IO + NonCancellable) {
             maliciousTrackerDao.deleteMaliciousTracker(maliciousTracker)
