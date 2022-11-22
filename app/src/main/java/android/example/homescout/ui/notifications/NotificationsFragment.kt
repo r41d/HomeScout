@@ -19,13 +19,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class NotificationsFragment : Fragment() {
 
     // PROPERTIES
     private var _binding: FragmentNotificationsBinding? = null
     private val binding get() = _binding!!
+    private var maliciousTrackersAdapter: MaliciousTrackerAdapter = MaliciousTrackerAdapter()
+
+    // PROPERTIES lateinit
+    private lateinit var notificationsViewModel: NotificationsViewModel
 
 
     // LIFECYCLE FUNCTIONS
@@ -35,9 +43,13 @@ class NotificationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        setupViewModelAndBinding(inflater, container)
+        setupButtonClearAllOnClickListener()
+        setupRecyclerView()
 
-        setupButtonNotifyOnClickListener()
+        notificationsViewModel.maliciousTrackerSortedByTimestamp.observe(viewLifecycleOwner) {
+            maliciousTrackersAdapter.submitList(it)
+        }
 
         return binding.root
     }
@@ -49,9 +61,29 @@ class NotificationsFragment : Fragment() {
 
 
     // FUNCTIONS USED IN LIFECYCLE (for code readability)
-    private fun setupButtonNotifyOnClickListener() {
-        binding.buttonNotify.setOnClickListener {
-            sendNotification()
+    private fun setupViewModelAndBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) {
+        notificationsViewModel = ViewModelProvider(this)[NotificationsViewModel::class.java]
+        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+    }
+
+    private fun setupButtonClearAllOnClickListener() {
+        binding.buttonClearAll.setOnClickListener {
+            notificationsViewModel.clearAll()
+        }
+    }
+
+    private fun setupRecyclerView() {
+        binding.scanResultsRecyclerView.apply {
+            adapter = maliciousTrackersAdapter
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                RecyclerView.VERTICAL,
+                false
+            )
+            isNestedScrollingEnabled = false
         }
     }
 

@@ -1,13 +1,22 @@
 package android.example.homescout.ui.notifications
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.example.homescout.repositories.MainRepository
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NotificationsViewModel : ViewModel() {
+@HiltViewModel
+class NotificationsViewModel @Inject constructor(
+    private val mainRepository: MainRepository
+): ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+    val maliciousTrackerSortedByTimestamp = mainRepository.getAllMaliciousTrackersSortedByTimestamp()
+
+    fun clearAll() {
+        viewModelScope.launch {
+            mainRepository.clearMaliciousTrackersTable()
+        }
     }
-    val text: LiveData<String> = _text
 }
