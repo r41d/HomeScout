@@ -2,7 +2,6 @@ package android.example.homescout.ui.notifications
 
 import android.example.homescout.R
 import android.example.homescout.database.MaliciousTracker
-import android.example.homescout.ui.scan.ScanResultAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
