@@ -19,6 +19,7 @@
     <string name="description_slider_distance">Distance</string>
     <string name="description_slider_time_in_min">Time</string>
     <string name="description_slider_occurrences">Occurrences</string>
+    <string name="text_button_delete_all">Delete All</string>
     <string name="text_dialog_slider_distance">Determines how many meters a tracker at least needs to follow you before getting notified.</string>
     <string name="text_dialog_slider_time_in_min">Determines how many minutes a tracker at least needs to follow you before getting notified.</string>
     <string name="text_dialog_slider_occurrences">Determines how many times a tracker at least needs to be close to you before getting notified.</string>
