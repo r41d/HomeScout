@@ -56,7 +56,7 @@ class MaliciousTrackerAdapter : RecyclerView.Adapter<MaliciousTrackerAdapter.Mal
         fun bind(maliciousTracker: MaliciousTracker) {
             deviceType.text = maliciousTracker.type
             macAddress.text = maliciousTracker.mac
-            val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault())
             date.text = dateFormat.format(maliciousTracker.timestampInMilliSeconds)
         }
     }
