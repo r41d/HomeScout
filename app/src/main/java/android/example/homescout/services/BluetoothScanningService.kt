@@ -149,11 +149,16 @@ class BluetoothScanningService : LifecycleService() {
 
         if (!isScanning && isServiceRunning) {
             handler.postDelayed({
+
+                // stop scanning afer SCAN_PERIOD
                 isScanning = false
                 bleScanner.stopScan(scanCallback)
+
                 handler.postDelayed({
+                    // loop: start scanning after INVERVAL_BLE_SCAN
                     startBleScan()
                 }, INTERVAL_BLE_SCAN )
+
             }, SCAN_PERIOD)
             isScanning = true
             bleScanner.startScan(scanCallback)
