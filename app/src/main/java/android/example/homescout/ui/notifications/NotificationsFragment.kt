@@ -76,7 +76,7 @@ class NotificationsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        binding.scanResultsRecyclerView.apply {
+        binding.maliciousTrackersRecyclerView.apply {
             adapter = maliciousTrackersAdapter
             layoutManager = LinearLayoutManager(
                 requireContext(),

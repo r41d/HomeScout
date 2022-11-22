@@ -7,7 +7,7 @@
     tools:context=".ui.notifications.NotificationsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/scan_results_recycler_view"
+        android:id="@+id/malicious_trackers_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/margin_small"
