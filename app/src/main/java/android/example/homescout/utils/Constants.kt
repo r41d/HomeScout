@@ -46,5 +46,5 @@ object Constants {
     const val CHANNEL_ID_TRACKER_CLASSIFICATION = "tracker_classification_channel"
     const val NOTIFICATION_CHANNEL_TRACKER_CLASSIFICATION = "tracker_classification"
     const val NOTIFICATION_ID_TRACKER_CLASSIFICATION = 4
-    const val INTERVAL_TRACKER_CLASSIFICATION = 2000L
+    const val INTERVAL_TRACKER_CLASSIFICATION = 5000L
 }
