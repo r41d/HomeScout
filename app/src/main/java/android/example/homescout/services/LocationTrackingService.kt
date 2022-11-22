@@ -81,7 +81,7 @@ class LocationTrackingService : LifecycleService() {
                         Timber.i("Start Service")
                         isServiceRunning = true
                         startForegroundService()
-                        sendCommandToServiceX(ACTION_START_TRACKER_CLASSIFICATION_SERVICE)
+//                        startTrackerClassificationService()
                     }
                 }
 
@@ -91,7 +91,7 @@ class LocationTrackingService : LifecycleService() {
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                     userPositionsHistoryBuffer.clear()
                     stopBluetoothScanningService()
-                    sendCommandToServiceX(ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE)
+//                    stopTrackerClassificationService()
                     stopSelf()
                 }
             }

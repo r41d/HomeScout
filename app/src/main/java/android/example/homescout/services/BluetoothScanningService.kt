@@ -18,7 +18,9 @@ import android.example.homescout.ui.main.MainActivity
 import android.example.homescout.utils.Constants
 import android.example.homescout.utils.Constants.ACTION_SHOW_SETTINGS_FRAGMENT
 import android.example.homescout.utils.Constants.ACTION_START_BLUETOOTH_SERVICE
+import android.example.homescout.utils.Constants.ACTION_START_TRACKER_CLASSIFICATION_SERVICE
 import android.example.homescout.utils.Constants.ACTION_STOP_BLUETOOTH_SERVICE
+import android.example.homescout.utils.Constants.ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE
 import android.example.homescout.utils.Constants.CHANNEL_ID_BLUETOOTH_SCANNING
 import android.example.homescout.utils.Constants.INTERVAL_BLE_SCAN
 import android.example.homescout.utils.Constants.NOTIFICATION_CHANNEL_BLUETOOTH_SCANNING
@@ -79,6 +81,7 @@ class BluetoothScanningService : LifecycleService() {
                         Timber.i("Start Service")
                         isServiceRunning = true
                         startForegroundService()
+                        startTrackerClassificationService()
 
                     }
                 }
@@ -86,9 +89,9 @@ class BluetoothScanningService : LifecycleService() {
                 ACTION_STOP_BLUETOOTH_SERVICE -> {
                     Timber.i("Stop Service")
                     isServiceRunning = false
+                    stopTrackerClassificationService()
                     stopSelf()
                 }
-
             }
 
         }
@@ -199,4 +202,19 @@ class BluetoothScanningService : LifecycleService() {
             mainRepository.insertBLEDevice(bleDevice)
         }
     }
+
+    private fun sendCommandToService(action: String) =
+        Intent(applicationContext, TrackerClassificationService::class.java).also {
+            it.action = action
+            applicationContext.startService(it)
+        }
+
+    private fun startTrackerClassificationService() {
+        sendCommandToService(ACTION_START_TRACKER_CLASSIFICATION_SERVICE)
+    }
+
+    private fun stopTrackerClassificationService() {
+        sendCommandToService(ACTION_STOP_TRACKER_CLASSIFICATION_SERVICE)
+    }
+
 }
