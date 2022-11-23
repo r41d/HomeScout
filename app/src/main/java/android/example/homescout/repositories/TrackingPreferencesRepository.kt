@@ -30,7 +30,7 @@ class TrackingPreferencesRepository @Inject constructor(private val dataStore: D
     }
 
     val timeInMin = dataStore.data.map { preferences ->
-        preferences[PreferenceKeys.TIME_IN_MIN] ?: 35.0f
+        preferences[PreferenceKeys.TIME_IN_MIN] ?: 5.0f
     }
 
     val occurrences = dataStore.data.map { preferences ->
