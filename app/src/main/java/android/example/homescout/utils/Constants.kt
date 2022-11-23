@@ -37,8 +37,8 @@ object Constants {
     const val CHANNEL_ID_BLUETOOTH_SCANNING = "bluetooth_scanning_channel"
     const val NOTIFICATION_CHANNEL_BLUETOOTH_SCANNING = "bluetooth_scanning"
     const val NOTIFICATION_ID_BLUETOOTH_SCANNING = 3
-    const val INTERVAL_BLE_SCAN = 5834L
-    const val SCAN_PERIOD = 5000L
+    const val INTERVAL_BLE_SCAN = 18000L
+    const val SCAN_PERIOD = 12000L
 
     // Tracker Identification Service
     const val ACTION_START_TRACKER_CLASSIFICATION_SERVICE = "ACTION_START_TRACKER_CLASSIFICATION_SERVICE"
@@ -46,5 +46,5 @@ object Constants {
     const val CHANNEL_ID_TRACKER_CLASSIFICATION = "tracker_classification_channel"
     const val NOTIFICATION_CHANNEL_TRACKER_CLASSIFICATION = "tracker_classification"
     const val NOTIFICATION_ID_TRACKER_CLASSIFICATION = 4
-    const val INTERVAL_TRACKER_CLASSIFICATION = 15000L
+    const val INTERVAL_TRACKER_CLASSIFICATION = 30000L
 }
