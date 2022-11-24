@@ -39,6 +39,10 @@ class DeviceTypeManager {
                 if (containsTileService) return Tile()
             }
 
+            if (result.device.name != null) {
+                return DeviceWithName(result.device.name)
+            }
+
             // Could not identify the device
             return Unknown()
         }
