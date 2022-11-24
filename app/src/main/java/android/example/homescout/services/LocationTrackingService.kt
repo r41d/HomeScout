@@ -81,7 +81,6 @@ class LocationTrackingService : LifecycleService() {
                         Timber.i("Start Service")
                         isServiceRunning = true
                         startForegroundService()
-//                        startTrackerClassificationService()
                     }
                 }
 
@@ -91,7 +90,6 @@ class LocationTrackingService : LifecycleService() {
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                     userPositionsHistoryBuffer.clear()
                     stopBluetoothScanningService()
-//                    stopTrackerClassificationService()
                     stopSelf()
                 }
             }
@@ -164,21 +162,11 @@ class LocationTrackingService : LifecycleService() {
             val isUserStationary = isUserStationary()
 
             if (!isUserStationary && !isBluetoothServiceRunning) {
-                Toast.makeText(
-                    applicationContext,
-                    "User moves -> start ble service",
-                    Toast.LENGTH_SHORT
-                ).show()
                 startBluetoothScanningService()
                 return
             }
 
             if (isUserStationary && isBluetoothServiceRunning) {
-                Toast.makeText(
-                    applicationContext,
-                    "User stationary -> stop ble service",
-                    Toast.LENGTH_SHORT
-                ).show()
                 stopBluetoothScanningService()
             }
         }
