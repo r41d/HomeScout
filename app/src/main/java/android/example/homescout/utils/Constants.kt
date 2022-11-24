@@ -37,7 +37,7 @@ object Constants {
     const val CHANNEL_ID_BLUETOOTH_SCANNING = "bluetooth_scanning_channel"
     const val NOTIFICATION_CHANNEL_BLUETOOTH_SCANNING = "bluetooth_scanning"
     const val NOTIFICATION_ID_BLUETOOTH_SCANNING = 3
-    const val INTERVAL_BLE_SCAN = 18000L
+    const val INTERVAL_BLE_SCAN = 12000L
     const val SCAN_PERIOD = 12000L
 
     // Tracker Identification Service
