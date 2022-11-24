@@ -26,15 +26,15 @@ class TrackingPreferencesRepository @Inject constructor(private val dataStore: D
 
     val distance = dataStore.data.map { preferences ->
         // Timber.i( "distance: ${preferences[PreferenceKeys.DISTANCE]}")
-        preferences[PreferenceKeys.DISTANCE] ?: 250.0f
+        preferences[PreferenceKeys.DISTANCE] ?: 200.0f
     }
 
     val timeInMin = dataStore.data.map { preferences ->
-        preferences[PreferenceKeys.TIME_IN_MIN] ?: 5.0f
+        preferences[PreferenceKeys.TIME_IN_MIN] ?: 1.0f
     }
 
     val occurrences = dataStore.data.map { preferences ->
-        preferences[PreferenceKeys.OCCURRENCES] ?: 5.0f
+        preferences[PreferenceKeys.OCCURRENCES] ?: 4.0f
     }
 
     suspend fun updateIsTrackingEnabled(isTrackingEnabled: Boolean) {
