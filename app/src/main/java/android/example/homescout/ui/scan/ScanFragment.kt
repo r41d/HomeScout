@@ -55,7 +55,6 @@ class ScanFragment : Fragment() {
 
 
     // PROPERTIES lateinit
-    private lateinit var scanViewModel: ScanViewModel
     private lateinit var scanSettings: ScanSettings
 
 
@@ -104,7 +103,6 @@ class ScanFragment : Fragment() {
 
     // FUNCTIONS USED IN onCreateView() (for code readability)
     private fun setupViewModelAndBinding(inflater: LayoutInflater, container: ViewGroup?) {
-        scanViewModel = ViewModelProvider(this)[ScanViewModel::class.java]
         _binding = FragmentScanBinding.inflate(inflater, container, false)
     }
 

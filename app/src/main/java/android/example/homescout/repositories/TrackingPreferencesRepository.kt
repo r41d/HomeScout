@@ -25,7 +25,6 @@ class TrackingPreferencesRepository @Inject constructor(private val dataStore: D
     }
 
     val distance = dataStore.data.map { preferences ->
-        // Timber.i( "distance: ${preferences[PreferenceKeys.DISTANCE]}")
         preferences[PreferenceKeys.DISTANCE] ?: 200.0f
     }
 
