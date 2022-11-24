@@ -38,7 +38,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class BluetoothScanningService : LifecycleService() {

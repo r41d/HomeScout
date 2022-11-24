@@ -27,7 +27,6 @@ import android.example.homescout.utils.Constants.STATIONARY_MOVING_DISTANCE
 import android.example.homescout.utils.RingBuffer
 import android.location.Location
 import android.os.Looper
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
