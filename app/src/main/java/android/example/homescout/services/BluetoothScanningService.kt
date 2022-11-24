@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class BluetoothScanningService : LifecycleService() {
@@ -48,6 +49,7 @@ class BluetoothScanningService : LifecycleService() {
     private var isServiceRunning = false
     private var isScanning = false
 
+    private val scanResults = HashMap<String, BLEDevice>()
     private var lastKnownLocation : LatLng? = null
 
     private val bluetoothAdapter: BluetoothAdapter by lazy {
@@ -151,20 +153,24 @@ class BluetoothScanningService : LifecycleService() {
         }
 
         if (!isScanning && isServiceRunning) {
-            handler.postDelayed({
 
-                // stop scanning afer SCAN_PERIOD
+            // stop scanning after SCAN_PERIOD
+            handler.postDelayed({
                 isScanning = false
                 bleScanner.stopScan(scanCallback)
+                insertScanResultsInDb()
 
+                // loop: start scanning after INTERVAL_BLE_SCAN
                 handler.postDelayed({
-                    // loop: start scanning after INVERVAL_BLE_SCAN
                     startBleScan()
                 }, INTERVAL_BLE_SCAN )
 
             }, SCAN_PERIOD)
+
+            scanResults.clear()
             isScanning = true
             bleScanner.startScan(scanCallback)
+
         } else {
             isScanning = false
             bleScanner.stopScan(scanCallback)
@@ -179,25 +185,34 @@ class BluetoothScanningService : LifecycleService() {
             lastKnownLocation?.let {
 
                 val mac = result.device.address
-                val timestampInMilliSeconds = Calendar.getInstance().timeInMillis
-                val lat = it.latitude
-                val lng = it.longitude
-                val deviceType = DeviceTypeManager.identifyDeviceType(result).type
 
-                val bleDevice = BLEDevice(
-                    mac,
-                    timestampInMilliSeconds,
-                    lat,
-                    lng,
-                    deviceType)
+                if (!scanResults.containsKey(mac)) {
 
-                insertBLEDevice(bleDevice)
+                    val timestampInMilliSeconds = Calendar.getInstance().timeInMillis
+                    val lat = it.latitude
+                    val lng = it.longitude
+                    val deviceType = DeviceTypeManager.identifyDeviceType(result).type
+
+                    val bleDevice = BLEDevice(
+                        mac,
+                        timestampInMilliSeconds,
+                        lat,
+                        lng,
+                        deviceType)
+
+                    scanResults[mac] = bleDevice
+                }
             }
-
         }
     }
 
-    fun  insertBLEDevice(bleDevice: BLEDevice) {
+    private fun insertScanResultsInDb() {
+        for (key in scanResults.keys) {
+            insertBLEDevice(scanResults[key]!!)
+        }
+    }
+
+    private fun insertBLEDevice(bleDevice: BLEDevice) {
         lifecycleScope.launch {
             mainRepository.insertBLEDevice(bleDevice)
         }
