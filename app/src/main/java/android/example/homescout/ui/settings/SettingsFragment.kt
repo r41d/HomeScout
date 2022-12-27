@@ -94,6 +94,8 @@ class SettingsFragment : Fragment() {
         setupColorChangeForInfoButtons()
         observeTrackingPreferences()
         addOnSliderTouchListeners()
+        setupButtonsForDifferentTrackingPreferences()
+
 
         return binding.root
     }
@@ -261,6 +263,26 @@ class SettingsFragment : Fragment() {
         binding.sliderDistance.addOnSliderTouchListener(touchListenerDistance)
         binding.sliderTimeInMin.addOnSliderTouchListener(touchListenerTime)
         binding.sliderOccurrences.addOnSliderTouchListener(touchListenerOccurrences)
+    }
+
+    private fun setupButtonsForDifferentTrackingPreferences() {
+        binding.buttonDefault.setOnClickListener {
+            binding.sliderDistance.value = 200.0F
+            binding.sliderTimeInMin.value = 1.0F
+            binding.sliderOccurrences.value = 4.0F
+        }
+
+        binding.buttonApple.setOnClickListener {
+            binding.sliderDistance.value = 850.0F
+            binding.sliderTimeInMin.value = 10.0F
+            binding.sliderOccurrences.value = 4.0F
+        }
+
+        binding.buttonAirGuard.setOnClickListener {
+            binding.sliderDistance.value = 400.0F
+            binding.sliderTimeInMin.value = 1.0F
+            binding.sliderOccurrences.value = 3.0F
+        }
     }
 
     // PRIVATE FUNCTIONS
